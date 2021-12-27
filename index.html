@@ -9,26 +9,9 @@
     <script src="scripts/lite.render.js"></script>
     <script src="scripts/turing.js"></script>
     <script src="scripts/page.js"></script>
-    <script>
-        function load_graph() {
-            var viz = new Viz();
-
-            viz.renderSVGElement('digraph { a -> b }')
-                .then(function(element) {
-                    document.body.appendChild(element);
-                })
-                .catch(error => {
-                    // Create a new Viz instance (@see Caveats page for more info)
-                    viz = new Viz();
-
-                    // Possibly display the error
-                    console.error(error);
-                });
-        }
-    </script>
 </head>
 
-<body onload="load_graph()">
+<body>
     <form>
         <input type="file" onchange="on_turing_json_selected(this)" />
     </form>

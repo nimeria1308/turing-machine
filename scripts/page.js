@@ -1,4 +1,4 @@
-let machine = null;
+var machine = null;
 
 function on_turing_json_selected(file_input) {
     const f = file_input.files[0];
@@ -9,6 +9,13 @@ function on_turing_json_selected(file_input) {
             // parse JSON
             const j = JSON.parse(evt_reader.target.result);
             machine = new TuringMachine(j.states, j.start, j.halt, j.symbols, j.rules);
+            machine.renderSVGElement()
+                .then(function(element) {
+                    document.body.appendChild(element);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
         };
 
         reader.readAsText(f);

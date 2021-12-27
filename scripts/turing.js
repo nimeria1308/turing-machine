@@ -73,7 +73,25 @@ class TuringMachine {
         this.start = start;
         this.halt = halt;
         this.rules = rules;
+        this.viz = new Viz();
+    }
 
-        console.log(this.states);
+    generateGraphString() {
+        return "digraph { x -> y }";
+    }
+
+    renderSVGElement() {
+        const graph = this.generateGraphString();
+        return new Promise((resolve, reject) => {
+            this.viz.renderSVGElement(graph)
+                .then(element => {
+                    resolve(element);
+                })
+                .catch(error => {
+                    // Create a new Viz instance (@see Caveats page for more info)
+                    viz = new Viz();
+                    reject(error);
+                });
+        });
     }
 }
