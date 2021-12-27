@@ -77,7 +77,33 @@ class TuringMachine {
     }
 
     generateGraphString() {
-        return "digraph { x -> y }";
+        let graph = "digraph {\n";
+
+        // list states
+        for (let state of this.states.keys()) {
+            graph += `  "${state}";\n`;
+        }
+
+        // halt state has a special shape
+        graph += `  "${this.halt}" [shape="doublecircle"];\n`;
+
+        // add extra start state
+        graph += `  "start" [shape="none"];\n`;
+        graph += `  "start" -> "${this.start}";\n`;
+
+        // go over rules
+        for (let rule of this.rules) {
+            const from_state = rule[0];
+            const from_symbol = rule[1];
+            const to_symbol = rule[2];
+            const head_action = rule[3];
+            const to_state = rule[4];
+            graph += `  "${from_state}" -> "${to_state}" [label="${from_symbol} / ${to_symbol}, ${head_action}"];\n`;
+        }
+
+
+        graph += "}";
+        return graph;
     }
 
     renderSVGElement() {
