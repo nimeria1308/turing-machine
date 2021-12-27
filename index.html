@@ -7,6 +7,8 @@
 
     <script src="scripts/viz.js"></script>
     <script src="scripts/lite.render.js"></script>
+    <script src="scripts/turing.js"></script>
+    <script src="scripts/page.js"></script>
     <script>
         function load_graph() {
             var viz = new Viz();
@@ -27,7 +29,9 @@
 </head>
 
 <body onload="load_graph()">
-
+    <form>
+        <input type="file" onchange="on_turing_json_selected(this)" />
+    </form>
 </body>
 
 </html>
