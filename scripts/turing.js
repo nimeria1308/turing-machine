@@ -1,30 +1,39 @@
 class TuringTape {
-    constructor(symbols, empty_symbol = null) {
+    constructor(symbols, empty_symbol = null, tape = [empty_symbol], head = 0) {
         if (!symbols.has(empty_symbol)) {
             throw `Invalid empty symbol '${empty_symbol}'`;
         }
 
+        for (let s of tape) {
+            if (!symbols.has(s)) {
+                throw `Invalid initial tape symbol '${s}'`;
+            }
+        }
+
+        if (head < 0 || head >= tape.length) {
+            throw `Invalid initial head index ${head}`;
+        }
+
         this.symbols = symbols;
         this.empty_symbol = empty_symbol;
-        this.head = 0;
-        this.head_min = 0;
-        this.head_max = 0;
-        this.tape = new Map();
+        this.tape = tape;
+        this.head = head;
     }
 
     head_move_left() {
         this.head -= 1;
-
-        if (this.head < this.head_min) {
-            this.head_min = this.head;
+        if (this.head < 0) {
+            this.head = 0;
+            this.tape.unshift(this.empty_symbol);
         }
     }
 
     head_move_right() {
         this.head += 1;
 
-        if (this.head > this.head_max) {
-            this.head_max = this.head;
+        if (this.head >= this.tape.length) {
+            this.head = this.tape.length;
+            this.tape.push(this.empty_symbol);
         }
     }
 
@@ -33,11 +42,7 @@ class TuringTape {
     }
 
     head_read() {
-        if (this.tape.has(this.head)) {
-            return this.tape.get(this.head);
-        } else {
-            return this.empty_symbol;
-        }
+        return this.tape[this.head];
     }
 
     head_write(symbol) {
@@ -45,19 +50,18 @@ class TuringTape {
             throw `Trying to add invalid symbol '${symbol}'`;
         }
 
-        this.tape.set(this.head, symbol);
+        this.tape[this.head] = symbol;
     }
 
     as_array() {
         console.log({
             "head": this.head,
-            "min": this.head_min,
-            "max": this.head_max,
             "data": this.tape
         });
+
         let arr = [];
-        for (let x = this.head_min; x <= this.head_max; x++) {
-            let value = this.tape.has(x) ? this.tape.get(x) : this.empty_symbol;
+        for (let x = 0; x < this.tape.length; x++) {
+            let value = this.tape[x];
             if (x == this.head) {
                 value += "*";
             }
