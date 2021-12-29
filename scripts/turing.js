@@ -54,20 +54,8 @@ class TuringTape {
     }
 
     as_array() {
-        console.log({
-            "head": this.head,
-            "data": this.tape
-        });
-
-        let arr = [];
-        for (let x = 0; x < this.tape.length; x++) {
-            let value = this.tape[x];
-            if (x == this.head) {
-                value += "*";
-            }
-            arr.push(value);
-        }
-
+        let arr = [...this.tape];
+        arr[this.head] += "*";
         return arr;
     }
 }
@@ -165,7 +153,6 @@ class TuringMachine {
 
         // next for current symbol
         const symbol = this.tape.head_read();
-        console.log(`Read symbol ${symbol}`);
 
         if (!state.has(symbol)) {
             throw `No action in state '${this.current}' for read symbol '${symbol}'`;
