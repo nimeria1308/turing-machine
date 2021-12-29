@@ -1,34 +1,31 @@
+/**
+ * tape container
+ */
+
 .tape {
     display: inline-grid;
-    /* grid-template-columns: repeat(9, 100px); */
     grid-auto-columns: 2em;
     grid-template-rows: 2em 1em;
-    /* align-items: center; */
-    /* gap: 10px; */
-    /* background-color: purple; */
 }
 
+
+/**
+ * tape item
+ */
+
 .tape>.symbol {
-    /* background-color: red; */
     grid-row: 1;
-    /* margin: auto; */
-    /* padding: auto; */
-    /* padding: 0 0 50% 0; */
-    /* text-align: center; */
     border: 1px solid black;
     border-right: none;
-    /* height: 100px; */
     display: flex;
     align-items: center;
     justify-content: center;
-    /* display: inline-table; */
-    /* vertical-align: bottom; */
-    /* min-height: 50px; */
 }
 
-.tape>.symbol:nth-last-child(2) {
-    border-right: 1px solid black;
-}
+
+/**
+ * first item (empty)
+ */
 
 .tape>.symbol:nth-last-child(2) {
     -webkit-mask-image: linear-gradient(to right, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
@@ -36,17 +33,32 @@
     border-right: none;
 }
 
+
+/**
+ * last item (empty)
+ */
+
 .tape>.symbol:nth-child(1) {
     -webkit-mask-image: linear-gradient(to left, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
     mask-image: linear-gradient(to left, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
     border-left: none;
 }
 
+
+/**
+ * tape head
+ */
+
 .tape>.head {
     grid-row: 2;
     margin: auto;
     color: red;
 }
+
+
+/**
+ * tape head (empty)
+ */
 
 .tape>.empty_head {
     grid-column-start: 1;
