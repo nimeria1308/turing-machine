@@ -1,5 +1,5 @@
 class TuringTape {
-    constructor(symbols, empty_symbol = null, tape = [empty_symbol], head = 0) {
+    constructor(symbols, empty_symbol = null, tape = [], head = -1) {
         if (!symbols.has(empty_symbol)) {
             throw `Invalid empty symbol '${empty_symbol}'`;
         }
@@ -10,7 +10,7 @@ class TuringTape {
             }
         }
 
-        if (head < 0 || head >= tape.length) {
+        if ((tape.length > 0) && (head < 0 || head >= tape.length)) {
             throw `Invalid initial head index ${head}`;
         }
 
@@ -41,7 +41,16 @@ class TuringTape {
         return this.head;
     }
 
+    fill_if_empty() {
+        if (this.tape.length == 0) {
+            // fill empty state
+            this.head = 0;
+            this.tape.push(this.empty_symbol);
+        }
+    }
+
     head_read() {
+        this.fill_if_empty();
         return this.tape[this.head];
     }
 
@@ -50,13 +59,13 @@ class TuringTape {
             throw `Trying to add invalid symbol '${symbol}'`;
         }
 
+        this.fill_if_empty();
         this.tape[this.head] = symbol;
     }
 
     as_array() {
-        let arr = [...this.tape];
-        arr[this.head] += "*";
-        return arr;
+        // return a copy of tape
+        return [...this.tape];
     }
 }
 
@@ -92,6 +101,9 @@ class TuringMachine {
         // validate start and halt states
         check_state(start, "Start");
         check_state(halt, "Halt");
+
+        // validate empty symbol
+        check_symbol(empty_symbol, "Empty");
 
         // Map of current states
         this.states = new Map();
@@ -134,6 +146,7 @@ class TuringMachine {
 
         this.start = start;
         this.halt = halt;
+        this.empty_symbol = empty_symbol;
         this.rules = rules;
         this.current = start;
         this.viz = new Viz();
@@ -141,8 +154,6 @@ class TuringMachine {
     }
 
     advance() {
-        console.log(this.tape.as_array());
-
         // bail out if halted
         if (this.current == this.halt) {
             return false;
@@ -236,5 +247,61 @@ class TuringMachine {
                     reject(error);
                 });
         });
+    }
+
+    // show sub-operation:
+    // 1. reading symbol from tape[head]
+    // 2. looking up rule for state + symbol
+    // 3. writing symbol to tape[head]
+    // 4. operating head
+
+    renderTape() {
+        // show tape array
+        // show head index
+
+        // create container
+        let container = document.createElement("div");
+        container.className = "tape";
+
+        // an generic item
+        const item = document.createElement("div");
+        item.className = "symbol";
+
+        // an empty item
+        const empty_item = item.cloneNode();
+        empty_item.innerText = this.empty_symbol;
+
+        // add initial empty symbol
+        container.appendChild(empty_item.cloneNode(true));
+
+        // add all symbols
+        const symbols = this.tape.as_array();
+        for (let symbol of symbols) {
+            const i = item.cloneNode();
+            i.innerText = symbol;
+            container.appendChild(i);
+        }
+
+        // add last empty symbol
+        container.appendChild(empty_item.cloneNode(true));
+
+        // add tape head
+        // <div class="head">^</div>
+        const head = document.createElement("div");
+        head.innerText = "^";
+        if (symbols.length > 0) {
+            // at least one item
+            head.className = "head";
+            // column index is not zero based, add +1
+            // there always is an "empty cell" to the left, add +1
+            const column = this.tape.head_index() + 2;
+            head.setAttribute("style", `grid-column: ${column}`);
+        } else {
+            // empty
+            head.className = "head empty_head";
+        }
+        container.appendChild(head);
+
+        return container;
     }
 }

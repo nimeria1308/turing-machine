@@ -13,21 +13,28 @@ function on_turing_json_selected(file_input) {
                 j.symbols, j.empty_symbol,
                 j.rules);
 
-            const machine_div = document.getElementById("machine");
-
-            function append_graphics(graph) {
-                while (machine_div.lastElementChild) {
-                    machine_div.removeChild(machine_div.lastElementChild);
+            function set_contents(element, contents) {
+                while (element.lastElementChild) {
+                    element.removeChild(element.lastElementChild);
                 }
-                machine_div.appendChild(graph);
+                element.appendChild(contents);
+            }
+
+            const machine_div = document.getElementById("machine");
+            const tape_div = document.getElementById("tape");
+
+            function update_machine(graph, tape) {
+                set_contents(machine_div, graph);
+                set_contents(tape_div, tape);
+                setTimeout(render_machine, 1000);
             }
 
             function render_machine() {
                 if (machine.advance()) {
                     machine.renderGraph()
                         .then((graph) => {
-                            append_graphics(graph);
-                            setTimeout(render_machine, 1000);
+                            const tape = machine.renderTape();
+                            update_machine(graph, tape);
                         })
                         .catch(error => {
                             console.error(error);
@@ -37,10 +44,8 @@ function on_turing_json_selected(file_input) {
 
             machine.renderGraph()
                 .then((graph) => {
-                    append_graphics(graph);
-
-                    // start auto-update
-                    setTimeout(render_machine, 1000);
+                    const tape = machine.renderTape();
+                    update_machine(graph, tape);
                 })
                 .catch(error => {
                     console.error(error);
