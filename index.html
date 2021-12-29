@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>Turing Machine!</title>
 
+    <link rel="stylesheet" href="styles/turing.css" />
     <script src="scripts/viz.js"></script>
     <script src="scripts/lite.render.js"></script>
     <script src="scripts/turing.js"></script>
@@ -14,7 +15,25 @@
 <body>
     <form>
         <input type="file" onchange="on_turing_json_selected(this)" />
+        <input type="text" />
     </form>
+
+    <div id="machine"></div>
+
+    <div class="tape">
+        <div class="symbols">0</div>
+        <div class="symbols">
+            1
+        </div class="symbols">
+        <div class="symbols">
+            0
+        </div class="symbols">
+        <div class="symbols">
+            0
+        </div class="symbols">
+        <div class="head">^</div>
+    </div>
+    </div>
 </body>
 
 </html>

@@ -1,5 +1,75 @@
+class TuringTape {
+    constructor(symbols, empty_symbol = null) {
+        if (!symbols.has(empty_symbol)) {
+            throw `Invalid empty symbol '${empty_symbol}'`;
+        }
+
+        this.symbols = symbols;
+        this.empty_symbol = empty_symbol;
+        this.head = 0;
+        this.head_min = 0;
+        this.head_max = 0;
+        this.tape = new Map();
+    }
+
+    head_move_left() {
+        this.head -= 1;
+
+        if (this.head < this.head_min) {
+            this.head_min = this.head;
+        }
+    }
+
+    head_move_right() {
+        this.head += 1;
+
+        if (this.head > this.head_max) {
+            this.head_max = this.head;
+        }
+    }
+
+    head_index() {
+        return this.head;
+    }
+
+    head_read() {
+        if (this.tape.has(this.head)) {
+            return this.tape.get(this.head);
+        } else {
+            return this.empty_symbol;
+        }
+    }
+
+    head_write(symbol) {
+        if (!this.symbols.has(symbol)) {
+            throw `Trying to add invalid symbol '${symbol}'`;
+        }
+
+        this.tape.set(this.head, symbol);
+    }
+
+    as_array() {
+        console.log({
+            "head": this.head,
+            "min": this.head_min,
+            "max": this.head_max,
+            "data": this.tape
+        });
+        let arr = [];
+        for (let x = this.head_min; x <= this.head_max; x++) {
+            let value = this.tape.has(x) ? this.tape.get(x) : this.empty_symbol;
+            if (x == this.head) {
+                value += "*";
+            }
+            arr.push(value);
+        }
+
+        return arr;
+    }
+}
+
 class TuringMachine {
-    constructor(states, start, halt, symbols, rules) {
+    constructor(states, start, halt, symbols, empty_symbol, rules, tape = []) {
         // states validation
         const valid_states = new Set(states);
 
@@ -73,7 +143,59 @@ class TuringMachine {
         this.start = start;
         this.halt = halt;
         this.rules = rules;
+        this.current = start;
         this.viz = new Viz();
+        this.tape = new TuringTape(valid_symbols, empty_symbol);
+    }
+
+    advance() {
+        console.log(this.tape.as_array());
+
+        // bail out if halted
+        if (this.current == this.halt) {
+            return false;
+        }
+
+        // current state in lookup table
+        const state = this.states.get(this.current);
+
+        // next for current symbol
+        const symbol = this.tape.head_read();
+        console.log(`Read symbol ${symbol}`);
+
+        if (!state.has(symbol)) {
+            throw `No action in state '${this.current}' for read symbol '${symbol}'`;
+        }
+
+        const next = state.get(symbol);
+
+        const to_state = next[0];
+        const to_symbol = next[1];
+        const head_action = next[2];
+
+        // update symbol at head
+        if (symbol != to_symbol) {
+            this.tape.head_write(to_symbol);
+        }
+
+        // update head
+        switch (head_action) {
+            case "L":
+                this.tape.head_move_left();
+                break;
+            case "R":
+                this.tape.head_move_right();
+                break;
+            default:
+                // do nothing
+                break;
+        }
+
+        // update current state
+        this.current = to_state;
+
+        // still moving
+        return true;
     }
 
     generateGraphString() {
@@ -81,15 +203,18 @@ class TuringMachine {
 
         // list states
         for (let state of this.states.keys()) {
-            graph += `  "${state}";\n`;
+            graph += `  "${state}" [shape=circle];\n`;
         }
 
         // halt state has a special shape
-        graph += `  "${this.halt}" [shape="doublecircle"];\n`;
+        graph += `  "${this.halt}" [shape=doublecircle];\n`;
 
         // add extra start state
-        graph += `  "start" [shape="none"];\n`;
+        graph += `  "start" [shape=none];\n`;
         graph += `  "start" -> "${this.start}";\n`;
+
+        // current state
+        graph += `  "${this.current}" [fillcolor=lightgray, style=filled];\n`;
 
         // go over rules
         for (let rule of this.rules) {
@@ -106,7 +231,7 @@ class TuringMachine {
         return graph;
     }
 
-    renderSVGElement() {
+    renderGraph() {
         const graph = this.generateGraphString();
         return new Promise((resolve, reject) => {
             this.viz.renderSVGElement(graph)
@@ -115,7 +240,8 @@ class TuringMachine {
                 })
                 .catch(error => {
                     // Create a new Viz instance (@see Caveats page for more info)
-                    viz = new Viz();
+                    this.viz = new Viz();
+                    console.log(graph);
                     reject(error);
                 });
         });

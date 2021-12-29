@@ -1,0 +1,57 @@
+.tape {
+    display: inline-grid;
+    /* grid-template-columns: repeat(9, 100px); */
+    grid-auto-columns: 2em;
+    grid-template-rows: 2em 1em;
+    /* align-items: center; */
+    /* gap: 10px; */
+    /* background-color: purple; */
+}
+
+.tape>.symbols {
+    /* background-color: red; */
+    grid-row: 1;
+    /* margin: auto; */
+    /* padding: auto; */
+    /* padding: 0 0 50% 0; */
+    /* text-align: center; */
+    border: 1px solid black;
+    border-right: none;
+    /* height: 100px; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* display: inline-table; */
+    /* vertical-align: bottom; */
+    /* min-height: 50px; */
+}
+
+.tape>.symbols:nth-last-child(2) {
+    border-right: 1px solid black;
+}
+
+.tape>.symbols:nth-last-child(2) {
+    -webkit-mask-image: linear-gradient(to right, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
+    mask-image: linear-gradient(to right, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
+    border-right: none;
+}
+
+.tape>.symbols:nth-child(1) {
+    -webkit-mask-image: linear-gradient(to left, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
+    mask-image: linear-gradient(to left, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
+    border-left: none;
+}
+
+.tape>.symbols:nth-child(3) {
+    background-color: red;
+}
+
+.tape>.head {
+    /* background-color: blue; */
+    grid-row: 2;
+    grid-column: 3;
+    /* grid-column-start: 1; */
+    /* grid-column-end: 3; */
+    margin: auto;
+    color: red;
+}
