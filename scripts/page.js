@@ -26,7 +26,7 @@ function on_turing_json_selected(file_input) {
             function update_machine(graph, tape) {
                 set_contents(machine_div, graph);
                 set_contents(tape_div, tape);
-                setTimeout(render_machine, 1000);
+                setTimeout(render_machine, 100);
             }
 
             function render_machine() {

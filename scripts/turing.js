@@ -1,5 +1,5 @@
 class TuringTape {
-    constructor(symbols, empty_symbol = null, tape = [], head = -1) {
+    constructor(symbols, empty_symbol = null, tape = [empty_symbol], head = 0) {
         if (!symbols.has(empty_symbol)) {
             throw `Invalid empty symbol '${empty_symbol}'`;
         }
@@ -41,16 +41,7 @@ class TuringTape {
         return this.head;
     }
 
-    fill_if_empty() {
-        if (this.tape.length == 0) {
-            // fill empty state
-            this.head = 0;
-            this.tape.push(this.empty_symbol);
-        }
-    }
-
     head_read() {
-        this.fill_if_empty();
         return this.tape[this.head];
     }
 
@@ -59,7 +50,6 @@ class TuringTape {
             throw `Trying to add invalid symbol '${symbol}'`;
         }
 
-        this.fill_if_empty();
         this.tape[this.head] = symbol;
     }
 
@@ -151,50 +141,106 @@ class TuringMachine {
         this.current = start;
         this.viz = new Viz();
         this.tape = new TuringTape(valid_symbols, empty_symbol);
+
+        // sub-operations
+        this.operation = "normal";
+        this.read_symbol = empty_symbol;
+        this.head_op = "^";
     }
 
     advance() {
+        if (this.operation == "move_state") {
+            this.operation = "normal";
+            return true;
+        }
+
         // bail out if halted
         if (this.current == this.halt) {
+            if (this.operation != "halted") {
+                this.operation = "halted";
+                return true;
+            }
+
             return false;
         }
 
         // current state in lookup table
         const state = this.states.get(this.current);
 
+        if (this.operation == "normal") {
+            this.operation = "read_state";
+            return true;
+        }
+
         // next for current symbol
         const symbol = this.tape.head_read();
+        if (this.operation == "read_state") {
+            this.read_symbol = symbol;
+            this.operation = "read_symbol";
+            return true;
+        }
 
         if (!state.has(symbol)) {
             throw `No action in state '${this.current}' for read symbol '${symbol}'`;
         }
 
-        const next = state.get(symbol);
+        const next = state.get(this.read_symbol);
 
         const to_state = next[0];
         const to_symbol = next[1];
         const head_action = next[2];
 
-        // update symbol at head
-        if (symbol != to_symbol) {
-            this.tape.head_write(to_symbol);
+        if (this.operation == "read_symbol") {
+            this.operation = "clear_symbol";
+            return true;
         }
 
-        // update head
-        switch (head_action) {
-            case "L":
-                this.tape.head_move_left();
-                break;
-            case "R":
-                this.tape.head_move_right();
-                break;
-            default:
-                // do nothing
-                break;
+        if (this.operation == "clear_symbol") {
+            // update symbol at head
+            this.tape.head_write(to_symbol);
+            this.operation = "write_symbol";
+            return true;
+        }
+
+        if (this.operation == "write_symbol") {
+            // update head visuals
+            switch (head_action) {
+                case "L":
+                    this.head_op = "<";
+                    break;
+                case "R":
+                    this.head_op = ">";
+                    break;
+                default:
+                    this.head_op = "-";
+                    break;
+            }
+
+            this.operation = "move_head";
+            return true;
+        }
+
+        if (this.operation == "move_head") {
+            // update head
+            switch (head_action) {
+                case "L":
+                    this.tape.head_move_left();
+                    break;
+                case "R":
+                    this.tape.head_move_right();
+                    break;
+                default:
+                    break;
+            }
+
+            this.operation = "moved_head";
+            return true;
         }
 
         // update current state
         this.current = to_state;
+        this.operation = "move_state";
+        this.head_op = "^";
 
         // still moving
         return true;
@@ -216,7 +262,20 @@ class TuringMachine {
         graph += `  "start" -> "${this.start}";\n`;
 
         // current state
-        graph += `  "${this.current}" [fillcolor=lightgray, style=filled];\n`;
+        const state_colors = new Map([
+            ["normal", "lightgrey"],
+            ["halted", "red"],
+            ["read_state", "green"],
+            ["read_symbol", "green"],
+            ["clear_symbol", "green"],
+            ["write_symbol", "green"],
+            ["move_head", "green"],
+            ["moved_head", "green"],
+            ["move_state", "yellow"]
+        ]);
+
+        let state_color = state_colors.get(this.operation);
+        graph += `  "${this.current}" [fillcolor=${state_color}, style=filled];\n`;
 
         // go over rules
         for (let rule of this.rules) {
@@ -249,12 +308,6 @@ class TuringMachine {
         });
     }
 
-    // show sub-operation:
-    // 1. reading symbol from tape[head]
-    // 2. looking up rule for state + symbol
-    // 3. writing symbol to tape[head]
-    // 4. operating head
-
     renderTape() {
         // show tape array
         // show head index
@@ -276,9 +329,23 @@ class TuringMachine {
 
         // add all symbols
         const symbols = this.tape.as_array();
-        for (let symbol of symbols) {
+        for (let x = 0; x < symbols.length; x++) {
+            const symbol = symbols[x];
             const i = item.cloneNode();
             i.innerText = symbol;
+
+            if (x == this.tape.head_index()) {
+                switch (this.operation) {
+                    case "read_symbol":
+                    case "clear_symbol":
+                    case "write_symbol":
+                        i.classList.add(this.operation);
+                        break;
+                    default:
+                        // nothing
+                        break;
+                }
+            }
             container.appendChild(i);
         }
 
@@ -286,9 +353,8 @@ class TuringMachine {
         container.appendChild(empty_item.cloneNode(true));
 
         // add tape head
-        // <div class="head">^</div>
         const head = document.createElement("div");
-        head.innerText = "^";
+        head.innerText = this.head_op;
         if (symbols.length > 0) {
             // at least one item
             head.className = "head";

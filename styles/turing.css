@@ -23,6 +23,18 @@
     background-color: #eee;
 }
 
+.tape>.read_symbol {
+    background-color: green !important;
+}
+
+.tape>.clear_symbol {
+    background-color: red !important;
+}
+
+.tape>.write_symbol {
+    background-color: yellow !important;
+}
+
 
 /**
  * first item (empty)
@@ -32,7 +44,6 @@
     -webkit-mask-image: linear-gradient(to right, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
     mask-image: linear-gradient(to right, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
     border-right: none;
-    background-color: white !important;
 }
 
 
@@ -44,7 +55,6 @@
     -webkit-mask-image: linear-gradient(to left, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
     mask-image: linear-gradient(to left, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
     border-left: none;
-    background-color: white !important;
 }
 
 
