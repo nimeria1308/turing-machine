@@ -14,8 +14,8 @@
 
 <body>
     <form>
-        <input type="file" onchange="on_turing_json_selected(this)" />
-        <input type="text" />
+        <input type="file" id="file" />
+        <input type="button" onclick="run_turing_machine_file()" value="Run" />
     </form>
     <div id="machine"></div>
     <div id="tape"></div>
