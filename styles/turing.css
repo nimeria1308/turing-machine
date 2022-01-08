@@ -20,7 +20,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #eee;
+    background-color: #ccc;
 }
 
 .tape>.read_symbol {
@@ -55,31 +55,6 @@
     -webkit-mask-image: linear-gradient(to left, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
     mask-image: linear-gradient(to left, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
     border-left: none;
-}
-
-
-/**
- * every even item
- */
-
-.tape>.symbol:nth-child(2n) {
-    background-color: #eee;
-}
-
-.tape>.symbol:nth-child(3n) {
-    background-color: #ddd;
-}
-
-.tape>.symbol:nth-child(4n) {
-    background-color: #ccc;
-}
-
-.tape>.symbol:nth-child(5n) {
-    background-color: #bbb;
-}
-
-.tape>.symbol:nth-child(6n) {
-    background-color: #aaa;
 }
 
 
