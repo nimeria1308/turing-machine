@@ -122,6 +122,10 @@
     background-color: #cfc;
 }
 
+.rules>tr.halted {
+    background-color: #f00;
+}
+
 .rules td.read_state {
     background-color: #0f0;
 }

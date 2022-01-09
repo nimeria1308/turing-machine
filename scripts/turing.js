@@ -512,6 +512,26 @@ class TuringMachine {
             }
         }
 
+        // add halt rule
+        const halt_row = document.createElement("tr");
+        container.appendChild(halt_row);
+
+        if (this.current == this.halt) {
+            switch (this.operation) {
+                case "halted":
+                    halt_row.className = "halted";
+                    break;
+                default:
+                    halt_row.className = "normal";
+                    break;
+            }
+        }
+
+        const halt_td = document.createElement("td");
+        halt_td.innerText = this.halt;
+        halt_td.colSpan = 5;
+        halt_row.appendChild(halt_td);
+
         return container;
     }
 }
