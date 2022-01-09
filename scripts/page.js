@@ -42,14 +42,14 @@ function run_turing_machine() {
                 set_contents(tape_div, machine.renderTape());
                 set_contents(operation_div, machine.render_operation());
                 set_contents(rules_div, machine.render_rules());
+
+                if (!machine.advance()) {
+                    clearInterval(animation);
+                }
             })
             .catch(error => {
                 console.error(error);
             });
-
-        if (!machine.advance()) {
-            clearInterval(animation);
-        }
     }
 
     clearInterval(animation);

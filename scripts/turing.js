@@ -60,7 +60,7 @@ class TuringTape {
 }
 
 class TuringMachine {
-    constructor(states, start, halt, symbols, empty_symbol, rules, tape = []) {
+    constructor(states, start, halt, symbols, empty_symbol, rules, tape = [empty_symbol], head = 0) {
         // states validation
         const valid_states = new Set(states);
 
@@ -140,11 +140,11 @@ class TuringMachine {
         this.rules = rules;
         this.current = start;
         this.viz = new Viz();
-        this.tape = new TuringTape(valid_symbols, empty_symbol);
+        this.tape = new TuringTape(valid_symbols, empty_symbol, tape, head);
 
         // sub-operations
         this.operation = "normal";
-        this.read_symbol = empty_symbol;
+        this.read_symbol = tape[head];
         this.head_op = "^";
         this.op_counter = 1;
     }
@@ -171,6 +171,7 @@ class TuringMachine {
 
         if (this.operation == "normal") {
             this.operation = "read_state";
+            this.read_symbol = null;
             return true;
         }
 
@@ -374,6 +375,18 @@ class TuringMachine {
     }
 
     render_operation() {
+        const state_descriptions = new Map([
+            ["normal", "At state"],
+            ["halted", "Halted"],
+            ["read_state", "Read current state"],
+            ["read_symbol", "Read current symbol"],
+            ["clear_symbol", "Cleared symbol"],
+            ["write_symbol", "Wrote symbol"],
+            ["move_head", "Moving head"],
+            ["moved_head", "Head moved"],
+            ["move_state", "Going to next state"]
+        ]);
+
         // create container
         const container = document.createElement("div");
         container.className = "operation";
@@ -384,7 +397,7 @@ class TuringMachine {
 
         const description = document.createElement("div");
         description.className = `desc ${this.operation}`;
-        description.innerText = this.operation;
+        description.innerText = state_descriptions.get(this.operation);
 
         container.appendChild(counter);
         container.appendChild(description);
@@ -394,28 +407,31 @@ class TuringMachine {
 
     render_rules() {
         // create container
-        const container = document.createElement("div");
+        const container = document.createElement("table");
         container.className = "rules";
 
-        const from_state_div_head = document.createElement("div");
-        from_state_div_head.innerText = "Current state";
-        container.appendChild(from_state_div_head);
+        const header = document.createElement("tr");
+        container.appendChild(header);
 
-        const from_symbol_div_head = document.createElement("div");
-        from_symbol_div_head.innerText = "Scanned symbol";
-        container.appendChild(from_symbol_div_head);
+        const from_state_th = document.createElement("th");
+        from_state_th.innerText = "Current state";
+        header.appendChild(from_state_th);
 
-        const to_symbol_div_head = document.createElement("div");
-        to_symbol_div_head.innerText = "Print symbol";
-        container.appendChild(to_symbol_div_head);
+        const from_symbol_th = document.createElement("th");
+        from_symbol_th.innerText = "Scanned symbol";
+        header.appendChild(from_symbol_th);
 
-        const head_action_div_head = document.createElement("div");
-        head_action_div_head.innerText = "Move tape";
-        container.appendChild(head_action_div_head);
+        const to_symbol_th = document.createElement("th");
+        to_symbol_th.innerText = "Print symbol";
+        header.appendChild(to_symbol_th);
 
-        const to_state_div_head = document.createElement("div");
-        to_state_div_head.innerText = "Next state";
-        container.appendChild(to_state_div_head);
+        const head_action_th = document.createElement("th");
+        head_action_th.innerText = "Move tape";
+        header.appendChild(head_action_th);
+
+        const to_state_th = document.createElement("th");
+        to_state_th.innerText = "Next state";
+        header.appendChild(to_state_th);
 
         for (let rule of this.rules) {
             const from_state = rule[0];
@@ -424,32 +440,75 @@ class TuringMachine {
             const head_action = rule[3];
             const to_state = rule[4];
 
-            const from_state_div = document.createElement("div");
-            from_state_div.innerText = from_state;
-            container.appendChild(from_state_div);
+            const row = document.createElement("tr");
+            container.appendChild(row);
 
-            const from_symbol_div = document.createElement("div");
-            from_symbol_div.innerText = from_symbol;
-            container.appendChild(from_symbol_div);
+            const from_state_td = document.createElement("td");
+            from_state_td.innerText = from_state;
+            row.appendChild(from_state_td);
 
-            const to_symbol_div = document.createElement("div");
-            to_symbol_div.innerText = to_symbol;
-            container.appendChild(to_symbol_div);
+            const from_symbol_td = document.createElement("td");
+            from_symbol_td.innerText = from_symbol;
+            row.appendChild(from_symbol_td);
 
-            const head_action_div = document.createElement("div");
-            head_action_div.innerText = head_action;
-            container.appendChild(head_action_div);
+            const to_symbol_td = document.createElement("td");
+            to_symbol_td.innerText = to_symbol;
+            row.appendChild(to_symbol_td);
 
-            const to_state_div = document.createElement("div");
-            to_state_div.innerText = to_state;
-            container.appendChild(to_state_div);
+            const head_action_td = document.createElement("td");
+            head_action_td.innerText = head_action;
+            row.appendChild(head_action_td);
 
-            if (from_state == this.current && from_symbol == this.read_symbol) {
-                from_state_div.className = "current";
-                from_symbol_div.className = "current";
-                to_symbol_div.className = "current";
-                head_action_div.className = "current";
-                to_state_div.className = "current";
+            const to_state_td = document.createElement("td");
+            to_state_td.innerText = to_state;
+            row.appendChild(to_state_td);
+
+            if (from_state == this.current) {
+                if (this.read_symbol != null && this.read_symbol == from_symbol) {
+                    // from state cell
+                    switch (this.operation) {
+                        case "read_symbol":
+                            from_symbol_td.className = "read_state";
+                            break;
+                        case "clear_symbol":
+                        case "write_symbol":
+                        case "move_head":
+                        case "moved_head":
+                            from_symbol_td.className = "clear_symbol";
+                            break;
+                    }
+                    console.log(from_symbol_td.className);
+
+                    // to symbol cell
+                    switch (this.operation) {
+                        case "write_symbol":
+                        case "move_head":
+                        case "moved_head":
+                            to_symbol_td.className = "write_symbol";
+                            break;
+                    }
+
+                    // set row
+                    switch (this.operation) {
+                        case "move_head":
+                            row.className = "move_head";
+                            break;
+                        case "moved_head":
+                            row.className = "moved_head";
+                            break;
+                        case "move_state":
+                            row.className = "move_state";
+                            break;
+                        case "normal":
+                            row.className = "normal";
+                            break;
+                        default:
+                            row.className = "current";
+                            break;
+                    }
+                } else if (this.read_symbol == null) {
+                    row.className = "current";
+                }
             }
         }
 

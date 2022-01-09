@@ -80,7 +80,7 @@
 
 .operation {
     display: inline-grid;
-    grid-template-columns: 2em 1em;
+    grid-template-columns: 2em auto;
 }
 
 .operation>.counter {
@@ -92,23 +92,44 @@
 }
 
 .rules {
-    display: inline-grid;
-    grid-auto-rows: 2em;
-    grid-template-columns: repeat(5, 1fr);
-    padding: 1em;
+    border-collapse: collapse;
 }
 
-.rules>div {
+.rules td,
+.rules th {
     text-align: center;
-    /* background-color: green; */
-    /* padding: 0.5em; */
     min-width: 2em;
-    gap: 0;
-    align-self: center;
-    justify-self: center;
+    padding: 0.25em;
 }
 
-.rules>div.current {
-    border-top: 1px solid red;
-    border-bottom: 1px solid red;
+.rules>tr.move_head {
+    background-color: #dfa;
+}
+
+.rules>tr.moved_head {
+    background-color: #efa;
+}
+
+.rules>tr.move_state {
+    background-color: #ffc;
+}
+
+.rules>tr.normal {
+    background-color: #ccc;
+}
+
+.rules>tr.current {
+    background-color: #cfc;
+}
+
+.rules td.read_state {
+    background-color: #0f0;
+}
+
+.rules td.clear_symbol {
+    background-color: #f00;
+}
+
+.rules td.write_symbol {
+    background-color: #ff0;
 }
