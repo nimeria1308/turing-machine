@@ -90,3 +90,25 @@
 .operation>.desc {
     grid-column: 2;
 }
+
+.rules {
+    display: inline-grid;
+    grid-auto-rows: 2em;
+    grid-template-columns: repeat(5, 1fr);
+    padding: 1em;
+}
+
+.rules>div {
+    text-align: center;
+    /* background-color: green; */
+    /* padding: 0.5em; */
+    min-width: 2em;
+    gap: 0;
+    align-self: center;
+    justify-self: center;
+}
+
+.rules>div.current {
+    border-top: 1px solid red;
+    border-bottom: 1px solid red;
+}

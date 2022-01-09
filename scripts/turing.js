@@ -391,4 +391,68 @@ class TuringMachine {
 
         return container;
     }
+
+    render_rules() {
+        // create container
+        const container = document.createElement("div");
+        container.className = "rules";
+
+        const from_state_div_head = document.createElement("div");
+        from_state_div_head.innerText = "Current state";
+        container.appendChild(from_state_div_head);
+
+        const from_symbol_div_head = document.createElement("div");
+        from_symbol_div_head.innerText = "Scanned symbol";
+        container.appendChild(from_symbol_div_head);
+
+        const to_symbol_div_head = document.createElement("div");
+        to_symbol_div_head.innerText = "Print symbol";
+        container.appendChild(to_symbol_div_head);
+
+        const head_action_div_head = document.createElement("div");
+        head_action_div_head.innerText = "Move tape";
+        container.appendChild(head_action_div_head);
+
+        const to_state_div_head = document.createElement("div");
+        to_state_div_head.innerText = "Next state";
+        container.appendChild(to_state_div_head);
+
+        for (let rule of this.rules) {
+            const from_state = rule[0];
+            const from_symbol = rule[1];
+            const to_symbol = rule[2];
+            const head_action = rule[3];
+            const to_state = rule[4];
+
+            const from_state_div = document.createElement("div");
+            from_state_div.innerText = from_state;
+            container.appendChild(from_state_div);
+
+            const from_symbol_div = document.createElement("div");
+            from_symbol_div.innerText = from_symbol;
+            container.appendChild(from_symbol_div);
+
+            const to_symbol_div = document.createElement("div");
+            to_symbol_div.innerText = to_symbol;
+            container.appendChild(to_symbol_div);
+
+            const head_action_div = document.createElement("div");
+            head_action_div.innerText = head_action;
+            container.appendChild(head_action_div);
+
+            const to_state_div = document.createElement("div");
+            to_state_div.innerText = to_state;
+            container.appendChild(to_state_div);
+
+            if (from_state == this.current && from_symbol == this.read_symbol) {
+                from_state_div.className = "current";
+                from_symbol_div.className = "current";
+                to_symbol_div.className = "current";
+                head_action_div.className = "current";
+                to_state_div.className = "current";
+            }
+        }
+
+        return container;
+    }
 }
