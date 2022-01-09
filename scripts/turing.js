@@ -267,7 +267,7 @@ class TuringMachine {
         // current state
         const state_colors = new Map([
             ["normal", "lightgrey"],
-            ["halted", "red"],
+            ["halted", "orangered"],
             ["read_state", "green"],
             ["read_symbol", "green"],
             ["clear_symbol", "green"],

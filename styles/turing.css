@@ -24,11 +24,11 @@
 }
 
 .tape>.read_symbol {
-    background-color: green !important;
+    background-color: lightgreen !important;
 }
 
 .tape>.clear_symbol {
-    background-color: red !important;
+    background-color: orangered !important;
 }
 
 .tape>.write_symbol {
@@ -65,7 +65,7 @@
 .tape>.head {
     grid-row: 2;
     margin: auto;
-    color: red;
+    color: orangered;
 }
 
 
@@ -123,15 +123,15 @@
 }
 
 .rules>tr.halted {
-    background-color: #f00;
+    background-color: orangered;
 }
 
 .rules td.read_state {
-    background-color: #0f0;
+    background-color: lightgreen;
 }
 
 .rules td.clear_symbol {
-    background-color: #f00;
+    background-color: orangered;
 }
 
 .rules td.write_symbol {
