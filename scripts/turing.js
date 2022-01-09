@@ -183,7 +183,7 @@ class TuringMachine {
             return true;
         }
 
-        if (!state.has(symbol)) {
+        if (!state.has(this.read_symbol)) {
             throw `No action in state '${this.current}' for read symbol '${symbol}'`;
         }
 
