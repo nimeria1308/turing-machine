@@ -64,7 +64,12 @@ class TuringMachine {
         // states validation
         const valid_states = new Set(states);
 
-        function check_state(state, name) {
+        function check_state(state, name, required = true) {
+            if (!required && (state === undefined || state === null)) {
+                // not required and not passed
+                return;
+            }
+
             if (!valid_states.has(state)) {
                 throw `${name} state '${state}' is not valid`;
             }
@@ -90,7 +95,7 @@ class TuringMachine {
 
         // validate start and halt states
         check_state(start, "Start");
-        check_state(halt, "Halt");
+        check_state(halt, "Halt", false);
 
         // validate empty symbol
         check_symbol(empty_symbol, "Empty");
@@ -257,8 +262,11 @@ class TuringMachine {
             graph += `  "${state}" [shape=circle];\n`;
         }
 
-        // halt state has a special shape
-        graph += `  "${this.halt}" [shape=doublecircle];\n`;
+        // only add halt state if it is there
+        if (this.halt !== undefined && this.halt != null) {
+            // halt state has a special shape
+            graph += `  "${this.halt}" [shape=doublecircle];\n`;
+        }
 
         // add extra start state
         graph += `  "start" [shape=none];\n`;
@@ -527,10 +535,12 @@ class TuringMachine {
             }
         }
 
-        const halt_td = document.createElement("td");
-        halt_td.innerText = this.halt;
-        halt_td.colSpan = 5;
-        halt_row.appendChild(halt_td);
+        if (this.halt !== undefined && this.halt !== null) {
+            const halt_td = document.createElement("td");
+            halt_td.innerText = this.halt;
+            halt_td.colSpan = 5;
+            halt_row.appendChild(halt_td);
+        }
 
         return container;
     }
