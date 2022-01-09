@@ -1,0 +1,19 @@
+{
+    "url": "https://en.wikipedia.org/wiki/Turing_machine_examples#Turing's_very_first_example",
+    "states": [
+        "B", "C", "E", "F"
+    ],
+    "start": "B",
+    "symbols": [
+        " ",
+        0,
+        1
+    ],
+    "empty_symbol": " ",
+    "rules": [
+        ["B", " ", 0, "R", "C"],
+        ["C", " ", " ", "R", "E"],
+        ["E", " ", 1, "R", "F"],
+        ["F", " ", " ", "R", "B"]
+    ]
+}
