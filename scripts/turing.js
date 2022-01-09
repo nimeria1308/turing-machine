@@ -485,7 +485,6 @@ class TuringMachine {
                             from_symbol_td.className = "clear_symbol";
                             break;
                     }
-                    console.log(from_symbol_td.className);
 
                     // to symbol cell
                     switch (this.operation) {
