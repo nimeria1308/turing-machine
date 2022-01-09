@@ -1,0 +1,30 @@
+{
+    "url": "https://en.wikipedia.org/wiki/Turing_machine_examples#A_copy_subroutine",
+    "states": [
+        "S1", "S2", "S3", "S4", "S5", "H"
+    ],
+    "start": "S1",
+    "halt": "H",
+    "symbols": [
+        0,
+        1
+    ],
+    "empty_symbol": 0,
+    "tape": [1, 1, 1],
+    "rules": [
+        ["S1", 0, 0, "N", "H"],
+        ["S1", 1, 0, "R", "S2"],
+
+        ["S2", 0, 0, "R", "S3"],
+        ["S2", 1, 1, "R", "S2"],
+
+        ["S3", 0, 1, "L", "S4"],
+        ["S3", 1, 1, "R", "S3"],
+
+        ["S4", 0, 0, "L", "S5"],
+        ["S4", 1, 1, "L", "S4"],
+
+        ["S5", 0, 1, "R", "S1"],
+        ["S5", 1, 1, "L", "S5"]
+    ]
+}
