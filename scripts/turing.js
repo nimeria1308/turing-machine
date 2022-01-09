@@ -60,7 +60,33 @@ class TuringTape {
 }
 
 class TuringMachine {
-    constructor(states, start, halt, symbols, empty_symbol, rules, tape = [empty_symbol], head = 0) {
+    constructor(config) {
+        function required_parameter(name) {
+            if (!(name in config)) {
+                throw `Required parameter '${name}' not specified in config`;
+            }
+
+            return config[name];
+        }
+
+        function optional_parameter(name, def) {
+            if (name in config) {
+                return config[name];
+            }
+
+            return def;
+        }
+
+        const states = required_parameter("states");
+        const start = required_parameter("start");
+        const symbols = required_parameter("symbols");
+        const empty_symbol = required_parameter("empty_symbol");
+        const rules = required_parameter("rules");
+
+        const halt = optional_parameter("halt", null);
+        const tape = optional_parameter("tape", [empty_symbol]);
+        const head = optional_parameter("head", 0);
+
         // states validation
         const valid_states = new Set(states);
 

@@ -16,12 +16,8 @@ function run_turing_machine_file() {
         const reader = new FileReader();
         reader.onload = (evt_reader) => {
             // parse JSON
-            const j = JSON.parse(evt_reader.target.result);
-            machine = new TuringMachine(
-                j.states, j.start, j.halt,
-                j.symbols, j.empty_symbol,
-                j.rules);
-
+            const config = JSON.parse(evt_reader.target.result);
+            machine = new TuringMachine(config);
             run_turing_machine();
         };
 
