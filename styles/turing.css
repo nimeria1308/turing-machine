@@ -77,3 +77,16 @@
     grid-column-start: 1;
     grid-column-end: 3;
 }
+
+.operation {
+    display: inline-grid;
+    grid-template-columns: 2em 1em;
+}
+
+.operation>.counter {
+    grid-column: 1;
+}
+
+.operation>.desc {
+    grid-column: 2;
+}

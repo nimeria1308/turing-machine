@@ -146,11 +146,13 @@ class TuringMachine {
         this.operation = "normal";
         this.read_symbol = empty_symbol;
         this.head_op = "^";
+        this.op_counter = 1;
     }
 
     advance() {
         if (this.operation == "move_state") {
             this.operation = "normal";
+            this.op_counter++;
             return true;
         }
 
@@ -367,6 +369,25 @@ class TuringMachine {
             head.className = "head empty_head";
         }
         container.appendChild(head);
+
+        return container;
+    }
+
+    render_operation() {
+        // create container
+        const container = document.createElement("div");
+        container.className = "operation";
+
+        const counter = document.createElement("div");
+        counter.className = "counter";
+        counter.innerText = this.op_counter;
+
+        const description = document.createElement("div");
+        description.className = `desc ${this.operation}`;
+        description.innerText = this.operation;
+
+        container.appendChild(counter);
+        container.appendChild(description);
 
         return container;
     }

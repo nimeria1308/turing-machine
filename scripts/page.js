@@ -32,13 +32,14 @@ function run_turing_machine_file() {
 function run_turing_machine() {
     const machine_div = document.getElementById("machine");
     const tape_div = document.getElementById("tape");
+    const operation_div = document.getElementById("operation");
 
     function render_machine() {
         machine.renderGraph()
             .then((graph) => {
-                const tape = machine.renderTape();
                 set_contents(machine_div, graph);
-                set_contents(tape_div, tape);
+                set_contents(tape_div, machine.renderTape());
+                set_contents(operation_div, machine.render_operation());
             })
             .catch(error => {
                 console.error(error);
