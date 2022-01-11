@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>Turing Machine!</title>
 
+    <link rel="stylesheet" href="external/bootstrap-4.6.1-dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="styles/turing.css" />
     <script src="external/viz-2.1.2/viz.js"></script>
     <script src="external/viz-2.1.2/lite.render.js"></script>
@@ -14,14 +15,35 @@
 </head>
 
 <body>
-    <form>
-        <input type="file" id="file" />
-        <input type="button" onclick="run_turing_machine_file()" value="Run" />
-    </form>
-    <div id="machine"></div>
-    <div id="tape"></div>
-    <div id="operation"></div>
-    <div id="rules"></div>
+    <div class="px-4 py-5 text-center">
+        <h1>Turing Machine Visualizer</h1>
+        <small class="text-muted"><em>by Simona Dimitrova</em></small>
+    </div>
+    <div id="file_form" class="container">
+        <form class="shadow-lg p-4 rounded-3 border">
+            <h2 class="form-group">Configure machine</h2>
+            <div class="form-group">
+                <!-- how to fire onchange for same file: https://stackoverflow.com/questions/4109276/how-to-detect-input-type-file-change-for-the-same-file -->
+                <input type="file" class="form-control-file" id="machine_file" accept=".json" onclick="this.value=null;" onchange="file_changed(this)">
+            </div>
+
+            <div class="form-group">
+                <label for="machine_source">Source:</label>
+                <textarea id="machine_source" class="form-control"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="machine_tape">Initial tape:</label>
+                <input type="text" class="form-control" id="machine_tape" />
+            </div>
+        </form>
+    </div>
+    <div id="view">
+        <div id="machine"></div>
+        <div id="tape"></div>
+        <div id="operation"></div>
+        <div id="rules"></div>
+    </div>
 </body>
 
 </html>
