@@ -5,10 +5,18 @@
     <meta charset="UTF-8">
     <title>Turing Machine!</title>
 
+    <!-- jQuery -->
+    <script src="external/jQuery-3.6.0/jquery-3.6.0.min.js"></script>
+
+    <!-- bootstrap -->
     <link rel="stylesheet" href="external/bootstrap-4.6.1-dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="styles/turing.css" />
+    <script src="external/bootstrap-4.6.1-dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Viz.JS -->
     <script src="external/viz-2.1.2/viz.js"></script>
     <script src="external/viz-2.1.2/lite.render.js"></script>
+
+    <link rel="stylesheet" href="styles/turing.css" />
     <script src="scripts/tape.js"></script>
     <script src="scripts/machine.js"></script>
     <script src="scripts/page.js"></script>
@@ -19,30 +27,82 @@
         <h1>Turing Machine Visualizer</h1>
         <small class="text-muted"><em>by Simona Dimitrova</em></small>
     </div>
-    <div id="file_form" class="container">
-        <form class="shadow-lg p-4 rounded-3 border">
-            <h2 class="form-group">Configure machine</h2>
-            <div class="form-group">
-                <!-- how to fire onchange for same file: https://stackoverflow.com/questions/4109276/how-to-detect-input-type-file-change-for-the-same-file -->
-                <input type="file" class="form-control-file" id="machine_file" accept=".json" onclick="this.value=null;" onchange="file_changed(this)">
+    <div class="container">
+        <div class="shadow-lg p-4 rounded-3 border">
+            <div id="file_form">
+                <form>
+                    <h2 class="form-group">Configure machine</h2>
+                    <div class="form-group">
+                        <!-- how to fire onchange for same file: https://stackoverflow.com/questions/4109276/how-to-detect-input-type-file-change-for-the-same-file -->
+                        <input type="file" class="form-control-file" id="machine_file" accept=".json" onclick="this.value=null;" onchange="file_changed(this)">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="machine_states">States <small>(comma separated)</small>:</label>
+                        <input type="text" class="form-control" id="machine_states" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="machine_start">Start state:</label>
+                        <input type="text" class="form-control" id="machine_start" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="machine_halt">Halt state <small>(optional)</small>:</label>
+                        <input type="text" class="form-control" id="machine_halt" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="machine_symbols">Symbols <small>(comma separated)</small>:</label>
+                        <input type="text" class="form-control" id="machine_symbols" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="machine_empty_symbol">Empty symbol:</label>
+                        <input type="text" class="form-control" id="machine_empty_symbol" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="machine_tape">Initial tape:</label>
+                        <input type="text" class="form-control" id="machine_tape" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="machine_rules">Rules <small>(line separated 5-tuples <small>(from state, scan symbol, write symbol, head action (N/L/R), to state)</small> )</small>:</label>
+                        <textarea id="machine_rules" class="form-control" rows=5></textarea>
+                    </div>
+
+                    <button type="button" class="btn btn-primary" onclick="launch_machine()">Launch</button>
+                </form>
             </div>
 
-            <div class="form-group">
-                <label for="machine_source">Source:</label>
-                <textarea id="machine_source" class="form-control"></textarea>
+            <div id="view">
+                <div id="machine"></div>
+                <div id="tape"></div>
+                <div id="operation"></div>
+                <div id="rules"></div>
             </div>
-
-            <div class="form-group">
-                <label for="machine_tape">Initial tape:</label>
-                <input type="text" class="form-control" id="machine_tape" />
-            </div>
-        </form>
+        </div>
     </div>
-    <div id="view">
-        <div id="machine"></div>
-        <div id="tape"></div>
-        <div id="operation"></div>
-        <div id="rules"></div>
+
+    <!-- Modal for Error messages -->
+    <div class="modal fade" id="modal_error" tabindex="-1" role="dialog" aria-labelledby="modal_error_title" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal_error_title">Error</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+                </div>
+                <div class="modal-body" id="modal_error_message">
+                    Something happened.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 
