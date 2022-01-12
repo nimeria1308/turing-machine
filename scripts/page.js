@@ -17,6 +17,8 @@ function show_error_dialog(error) {
     modal.show();
 }
 
+var filename = "turing_machine.json";
+
 function file_changed(file) {
     const f = file.files[0];
     if (f) {
@@ -24,6 +26,8 @@ function file_changed(file) {
         if (confirm("Are you sure you want to replace the loaded machine?")) {
             const reader = new FileReader();
             reader.onload = (event) => {
+                filename = f.name;
+
                 try {
                     // parse JSON
                     const config = JSON.parse(event.target.result);
@@ -74,46 +78,68 @@ function file_changed(file) {
     }
 }
 
-function launch_machine() {
-    // validate
+function config_from_inputs() {
+    const states_input = document.getElementById("machine_states");
+    const start_input = document.getElementById("machine_start");
+    const halt_input = document.getElementById("machine_halt");
+    const symbols_input = document.getElementById("machine_symbols");
+    const empty_symbol_input = document.getElementById("machine_empty_symbol");
+    const tape_input = document.getElementById("machine_tape");
+    const rules_input = document.getElementById("machine_rules");
+
+    // load values from HTML form
+    const config = {};
+    config.states = states_input.value.split(",");
+    config.start = start_input.value;
+    config.symbols = symbols_input.value.split(",");
+    config.empty_symbol = empty_symbol_input.value;
+
+    config.rules = [];
+    for (let rule of rules_input.value.split("\n")) {
+        if (rule != "") {
+            config.rules.push(rule.split(","));
+        }
+    }
+
+    // optional
+    if (halt_input.value) {
+        config.halt = halt_input.value;
+    }
+
+    if (tape_input.value) {
+        config.tape = tape_input.value.split(",");
+    }
+
+    return config;
+}
+
+function save_machine() {
     try {
-        const states_input = document.getElementById("machine_states");
-        const start_input = document.getElementById("machine_start");
-        const halt_input = document.getElementById("machine_halt");
-        const symbols_input = document.getElementById("machine_symbols");
-        const empty_symbol_input = document.getElementById("machine_empty_symbol");
-        const tape_input = document.getElementById("machine_tape");
-        const rules_input = document.getElementById("machine_rules");
+        const config = config_from_inputs();
 
-        // load values from HTML form
-        const config = {};
-        config.states = states_input.value.split(",");
-        config.start = start_input.value;
-        config.symbols = symbols_input.value.split(",");
-        config.empty_symbol = empty_symbol_input.value;
+        filename = prompt("Enter filename for turing machine", filename);
 
-        config.rules = [];
-        for (let rule of rules_input.value.split("\n")) {
-            if (rule != "") {
-                config.rules.push(rule.split(","));
-            }
+        if (!filename.endsWith(".json")) {
+            filename = filename + ".json";
         }
 
-        // optional
-        if (halt_input.value) {
-            config.halt = halt_input.value;
-        }
+        // Generate JSON
+        const text = JSON.stringify(config, null, 4);
 
-        if (tape_input.value) {
-            config.tape = tape_input.value.split(",");
-        }
+        const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+        saveAs(blob, filename);
+    } catch (e) {
+        show_error_dialog(e);
+    }
+}
 
+function launch_machine() {
+    try {
+        const config = config_from_inputs();
         machine = new TuringMachine(config);
 
         // all is well, hide the configuration window
-
         run_turing_machine();
-
     } catch (e) {
         show_error_dialog(e);
     }
