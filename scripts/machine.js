@@ -1,3 +1,7 @@
+function is_empty(v) {
+    return v == "" || v === undefined || v == null;
+}
+
 class TuringMachine {
     constructor(config) {
         function required_parameter(name) {
@@ -5,11 +9,15 @@ class TuringMachine {
                 throw `Required parameter '${name}' not specified in config`;
             }
 
+            if (is_empty(config[name])) {
+                throw `Required parameter '${name}' is empty`;
+            }
+
             return config[name];
         }
 
         function optional_parameter(name, def) {
-            if (name in config) {
+            if (name in config && !is_empty(config[name])) {
                 return config[name];
             }
 
@@ -30,13 +38,13 @@ class TuringMachine {
         const valid_states = new Set(states);
 
         function check_state(state, name, required = true) {
-            if (!required && (state === undefined || state === null)) {
+            if (!required && is_empty(state)) {
                 // not required and not passed
                 return;
             }
 
             if (!valid_states.has(state)) {
-                throw `${name} state '${state}' is not valid`;
+                throw `${name} state '${state}' is not valid. Choose from: ${Array.from(valid_states).join(", ")}`;
             }
         }
 
@@ -45,7 +53,7 @@ class TuringMachine {
 
         function check_symbol(symbol, name) {
             if (!valid_symbols.has(symbol)) {
-                throw `Invalid ${name} symbol '${symbol}'`;
+                throw `Invalid ${name} symbol '${symbol}'. Choose from: ${Array.from(valid_symbols).join(", ")}`;
             }
         }
 
@@ -54,7 +62,7 @@ class TuringMachine {
 
         function check_head_action(action) {
             if (!valid_head_actions.has(action)) {
-                throw `Invalid action '${action}'`;
+                throw `Invalid action '${action}'. Choose from: ${Array.from(valid_head_actions).join(", ")}`;
             }
         }
 
@@ -228,7 +236,7 @@ class TuringMachine {
         }
 
         // only add halt state if it is there
-        if (this.halt !== undefined && this.halt != null) {
+        if (!is_empty(this.halt)) {
             // halt state has a special shape
             graph += `  "${this.halt}" [shape=doublecircle];\n`;
         }

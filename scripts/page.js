@@ -94,7 +94,9 @@ function launch_machine() {
 
         config.rules = [];
         for (let rule of rules_input.value.split("\n")) {
-            config.rules.push(rule.split(","));
+            if (rule != "") {
+                config.rules.push(rule.split(","));
+            }
         }
 
         // optional
