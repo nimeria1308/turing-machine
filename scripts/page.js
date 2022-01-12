@@ -119,23 +119,6 @@ function launch_machine() {
     }
 }
 
-function run_turing_machine_file() {
-    const file_input = document.getElementById("file");
-
-    const f = file_input.files[0];
-    if (f) {
-        const reader = new FileReader();
-        reader.onload = (evt_reader) => {
-            // parse JSON
-            const config = JSON.parse(evt_reader.target.result);
-            machine = new TuringMachine(config);
-            run_turing_machine();
-        };
-
-        reader.readAsText(f);
-    }
-}
-
 function run_turing_machine() {
     const machine_div = document.getElementById("machine");
     const tape_div = document.getElementById("tape");
