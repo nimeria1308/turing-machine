@@ -42,7 +42,7 @@
 
                     <div class="form-group">
                         <label for="machine_states">States <small>(comma separated)</small>:</label>
-                        <input type="text" class="form-control" id="machine_states" />
+                        <input type="text" class="form-control" id="machine_states" placeholder="Example: S1,S2,S3,HALT" />
                     </div>
 
                     <div class="form-group">
@@ -71,8 +71,9 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="machine_rules">Rules <small>(line separated 5-tuples <small>(from state, scan symbol, write symbol, head action (N/L/R), to state)</small> )</small>:</label>
-                        <textarea id="machine_rules" class="form-control" rows=5></textarea>
+                        <label for="machine_rules">Rules <small>(line separated 5-tuples)</small>:</label>
+                        <textarea id="machine_rules" class="form-control" rows=5 placeholder="Example: A,0,1,R,B"></textarea>
+                        <small id="emailHelp" class="form-text text-muted">Rule format: from state, scan symbol, write symbol, head action (N/L/R), to state </small>
                     </div>
 
                     <button type="button" class="btn btn-primary" onclick="launch_machine()">Launch</button>
