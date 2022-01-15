@@ -3,13 +3,13 @@ function is_empty(v) {
 }
 
 class TuringMachine {
-    constructor(config) {
+    constructor(config, validate = true) {
         function required_parameter(name) {
-            if (!(name in config)) {
+            if (!(name in config) && validate) {
                 throw `Required parameter '${name}' not specified in config`;
             }
 
-            if (is_empty(config[name])) {
+            if (is_empty(config[name]) && validate) {
                 throw `Required parameter '${name}' is empty`;
             }
 
@@ -43,7 +43,7 @@ class TuringMachine {
                 return;
             }
 
-            if (!valid_states.has(state)) {
+            if (!valid_states.has(state) && validate) {
                 throw `${name} state '${state}' is not valid. Choose from: ${Array.from(valid_states).join(", ")}`;
             }
         }
@@ -52,7 +52,7 @@ class TuringMachine {
         const valid_symbols = new Set(symbols);
 
         function check_symbol(symbol, name) {
-            if (!valid_symbols.has(symbol)) {
+            if (!valid_symbols.has(symbol) && validate) {
                 throw `Invalid ${name} symbol '${symbol}'. Choose from: ${Array.from(valid_symbols).join(", ")}`;
             }
         }
@@ -61,7 +61,7 @@ class TuringMachine {
         const valid_head_actions = new Set(["N", "L", "R"]);
 
         function check_head_action(action) {
-            if (!valid_head_actions.has(action)) {
+            if (!valid_head_actions.has(action) && validate) {
                 throw `Invalid action '${action}'. Choose from: ${Array.from(valid_head_actions).join(", ")}`;
             }
         }
@@ -118,7 +118,7 @@ class TuringMachine {
         this.rules = rules;
         this.current = start;
         this.viz = new Viz();
-        this.tape = new TuringTape(valid_symbols, empty_symbol, tape, head);
+        this.tape = new TuringTape(valid_symbols, empty_symbol, tape, head, validate);
 
         // sub-operations
         this.operation = "normal";

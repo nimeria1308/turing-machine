@@ -1,17 +1,19 @@
 class TuringTape {
-    constructor(symbols, empty_symbol = null, tape = [empty_symbol], head = 0) {
-        if (!symbols.has(empty_symbol)) {
-            throw `Invalid empty symbol '${empty_symbol}'`;
-        }
-
-        for (let s of tape) {
-            if (!symbols.has(s)) {
-                throw `Invalid initial tape symbol '${s}'`;
+    constructor(symbols, empty_symbol = null, tape = [empty_symbol], head = 0, validate = true) {
+        if (validate) {
+            if (!symbols.has(empty_symbol)) {
+                throw `Invalid empty symbol '${empty_symbol}'`;
             }
-        }
 
-        if ((tape.length > 0) && (head < 0 || head >= tape.length)) {
-            throw `Invalid initial head index ${head}`;
+            for (let s of tape) {
+                if (!symbols.has(s)) {
+                    throw `Invalid initial tape symbol '${s}'`;
+                }
+            }
+
+            if ((tape.length > 0) && (head < 0 || head >= tape.length)) {
+                throw `Invalid initial head index ${head}`;
+            }
         }
 
         this.symbols = symbols;
