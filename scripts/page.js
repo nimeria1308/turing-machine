@@ -29,6 +29,8 @@ function file_changed(file) {
             reader.onload = (event) => {
                 filename = f.name;
 
+                stop_machine();
+
                 try {
                     // parse JSON
                     const config = JSON.parse(event.target.result);
@@ -58,6 +60,9 @@ function file_changed(file) {
                     }
                     const rules = document.getElementById("machine_rules");
                     rules.value = config.rules.join("\n");
+
+                    // update preview
+                    schedule_preview();
                 } catch (e) {
                     show_error_dialog(e);
                 }
@@ -118,6 +123,13 @@ function save_machine() {
     }
 }
 
+function stop_machine() {
+    if (animation != null) {
+        clearInterval(animation);
+        animation = null;
+    }
+}
+
 function launch_machine() {
     try {
         const config = config_from_inputs();
@@ -145,7 +157,7 @@ function run_turing_machine() {
                 set_contents(rules_div, machine.render_rules());
 
                 if (!machine.advance()) {
-                    clearInterval(animation);
+                    stop_machine();
                 }
             })
             .catch(error => {
@@ -153,7 +165,7 @@ function run_turing_machine() {
             });
     }
 
-    clearInterval(animation);
+    stop_machine();
     animation = setInterval(render_machine, 100);
 }
 
