@@ -73,13 +73,32 @@ class TuringMachine {
             // validate actions
             check_head_action(head_action);
 
+            // validate rules
+            if (validate) {
+                if (is_empty(from_state)) {
+                    throw `From state for rule '${v}' is empty`;
+                }
+
+                if (is_empty(to_state)) {
+                    throw `To state for rule '${v}' is empty`;
+                }
+
+                if (is_empty(from_symbol)) {
+                    throw `From symbol for rule '${v}' is empty`;
+                }
+
+                if (is_empty(to_symbol)) {
+                    throw `To symbol for rule '${v}' is empty`;
+                }
+            }
+
             // Add to lookup table
             if (!this.state_map.has(from_state)) {
                 this.state_map.set(from_state, new Map());
             }
 
             const from_table = this.state_map.get(from_state);
-            if (from_table.has(from_symbol)) {
+            if (from_table.has(from_symbol) && validate) {
                 throw `There already is a rule for state='${from_state}' symbol='${from_symbol}'`;
             }
 
@@ -89,13 +108,19 @@ class TuringMachine {
                 head_action
             ]);
 
-            // add states from to rule to set of states
-            states.add(from_state);
-            states.add(to_state);
+            function add_if_not_empty(where, what) {
+                if (!is_empty(what)) {
+                    where.add(what);
+                }
+            }
 
-            // add symbols from rule to set of symbols
-            symbols.add(from_symbol);
-            symbols.add(to_symbol);
+            // add states from to rule to set of states (if not empty)
+            add_if_not_empty(states, from_state);
+            add_if_not_empty(states, to_state);
+
+            // add symbols from rule to set of symbols (if not empty)
+            add_if_not_empty(symbols, from_symbol);
+            add_if_not_empty(symbols, to_symbol);
         }
 
         this.states = states;
