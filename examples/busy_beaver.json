@@ -1,8 +1,5 @@
 {
     "url": "https://en.wikipedia.org/wiki/Turing_machine",
-    "start": "A",
-    "halt": "H",
-    "empty_symbol": 0,
     "rules": [
         ["A", 0, 1, "R", "B"],
         ["A", 1, 1, "L", "C"],
@@ -12,5 +9,8 @@
 
         ["C", 0, 1, "L", "B"],
         ["C", 1, 1, "N", "H"]
-    ]
+    ],
+    "start": "A",
+    "halt": "H",
+    "empty_symbol": 0
 }

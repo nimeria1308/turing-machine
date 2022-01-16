@@ -1,11 +1,11 @@
 {
     "url": "https://en.wikipedia.org/wiki/Turing_machine_examples#Turing's_very_first_example",
-    "start": "B",
-    "empty_symbol": " ",
     "rules": [
         ["B", " ", 0, "R", "C"],
         ["C", " ", " ", "R", "E"],
         ["E", " ", 1, "R", "F"],
         ["F", " ", " ", "R", "B"]
-    ]
+    ],
+    "start": "B",
+    "empty_symbol": " "
 }

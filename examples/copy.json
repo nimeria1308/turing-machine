@@ -1,9 +1,5 @@
 {
     "url": "https://en.wikipedia.org/wiki/Turing_machine_examples#A_copy_subroutine",
-    "start": "S1",
-    "halt": "H",
-    "empty_symbol": 0,
-    "tape": [1, 1, 1],
     "rules": [
         ["S1", 0, 0, "N", "H"],
         ["S1", 1, 0, "R", "S2"],
@@ -19,5 +15,9 @@
 
         ["S5", 0, 1, "R", "S1"],
         ["S5", 1, 1, "L", "S5"]
-    ]
+    ],
+    "start": "S1",
+    "halt": "H",
+    "empty_symbol": 0,
+    "tape": [1, 1, 1]
 }

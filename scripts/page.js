@@ -68,15 +68,9 @@ function file_changed(file) {
 }
 
 function config_from_inputs() {
-    const start_input = document.getElementById("machine_start");
-    const halt_input = document.getElementById("machine_halt");
-    const empty_symbol_input = document.getElementById("machine_empty_symbol");
-    const tape_input = document.getElementById("machine_tape");
-    const rules_input = document.getElementById("machine_rules");
-
-    // load values from HTML form
     const config = {};
 
+    const rules_input = document.getElementById("machine_rules");
     config.rules = [];
     for (let rule of rules_input.value.split("\n")) {
         if (rule != "") {
@@ -84,14 +78,19 @@ function config_from_inputs() {
         }
     }
 
+    const start_input = document.getElementById("machine_start");
     config.start = start_input.value;
+
+    const empty_symbol_input = document.getElementById("machine_empty_symbol");
     config.empty_symbol = empty_symbol_input.value;
 
     // optional
+    const halt_input = document.getElementById("machine_halt");
     if (halt_input.value) {
         config.halt = halt_input.value;
     }
 
+    const tape_input = document.getElementById("machine_tape");
     if (tape_input.value) {
         config.tape = tape_input.value.split(",");
     }
