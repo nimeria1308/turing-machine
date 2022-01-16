@@ -42,39 +42,32 @@
                 <div class="row">
                     <form class="col">
                         <div class="form-group">
-                            <label for="machine_states">States <small>(comma separated)</small>:</label>
-                            <input type="text" class="form-control" id="machine_states" placeholder="Example: S1,S2,S3,HALT" oninput="schedule_preview()" />
-                        </div>
-
-                        <div class="form-group">
-                            <label for="machine_start">Start state:</label>
-                            <input type="text" class="form-control" id="machine_start" oninput="schedule_preview()" />
-                        </div>
-
-                        <div class="form-group">
-                            <label for="machine_halt">Halt state <small>(optional)</small>:</label>
-                            <input type="text" class="form-control" id="machine_halt" oninput="schedule_preview()" />
-                        </div>
-
-                        <div class="form-group">
-                            <label for="machine_symbols">Symbols <small>(comma separated)</small>:</label>
-                            <input type="text" class="form-control" id="machine_symbols" />
-                        </div>
-
-                        <div class="form-group">
-                            <label for="machine_empty_symbol">Empty symbol:</label>
-                            <input type="text" class="form-control" id="machine_empty_symbol" />
-                        </div>
-
-                        <div class="form-group">
-                            <label for="machine_tape">Initial tape:</label>
-                            <input type="text" class="form-control" id="machine_tape" />
-                        </div>
-
-                        <div class="form-group">
                             <label for="machine_rules">Rules <small>(line separated 5-tuples)</small>:</label>
                             <textarea id="machine_rules" class="form-control" rows=5 placeholder="Example: A,0,1,R,B" oninput="schedule_preview()"></textarea>
                             <small id="emailHelp" class="form-text text-muted">Rule format: from state, scan symbol, write symbol, head action (N/L/R), to state </small>
+                        </div>
+
+                        <div class="container p-0">
+                            <div class="row">
+                                <div class="form-group col">
+                                    <label for="machine_start">Start state:</label>
+                                    <input type="text" class="form-control" id="machine_start" oninput="schedule_preview()" />
+                                </div>
+
+                                <div class="form-group col">
+                                    <label for="machine_halt">Halt state <small>(optional)</small>:</label>
+                                    <input type="text" class="form-control" id="machine_halt" oninput="schedule_preview()" />
+                                </div>
+
+                                <div class="form-group col">
+                                    <label for="machine_empty_symbol">Empty symbol:</label>
+                                    <input type="text" class="form-control" id="machine_empty_symbol" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="machine_tape">Initial tape:</label>
+                            <input type="text" class="form-control" id="machine_tape" />
                         </div>
 
                         <button type="button" class="btn btn-primary" onclick="launch_machine()">Launch</button>

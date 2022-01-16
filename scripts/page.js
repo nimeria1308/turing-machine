@@ -33,12 +33,6 @@ function file_changed(file) {
                     // parse JSON
                     const config = JSON.parse(event.target.result);
 
-                    if (!("states" in config)) {
-                        throw `"states" key missing in '${f.name}'`;
-                    }
-                    const states = document.getElementById("machine_states");
-                    states.value = config.states;
-
                     if (!("start" in config)) {
                         throw `"start" key missing in '${f.name}'`;
                     }
@@ -48,12 +42,6 @@ function file_changed(file) {
                     // optional
                     const halt = document.getElementById("machine_halt");
                     halt.value = ("halt" in config) ? config.halt : "";
-
-                    if (!("symbols" in config)) {
-                        throw `"symbols" key missing in '${f.name}'`;
-                    }
-                    const symbols = document.getElementById("machine_symbols");
-                    symbols.value = config.symbols;
 
                     if (!("empty_symbol" in config)) {
                         throw `"empty_symbol" key missing in '${f.name}'`;
@@ -80,20 +68,14 @@ function file_changed(file) {
 }
 
 function config_from_inputs() {
-    const states_input = document.getElementById("machine_states");
     const start_input = document.getElementById("machine_start");
     const halt_input = document.getElementById("machine_halt");
-    const symbols_input = document.getElementById("machine_symbols");
     const empty_symbol_input = document.getElementById("machine_empty_symbol");
     const tape_input = document.getElementById("machine_tape");
     const rules_input = document.getElementById("machine_rules");
 
     // load values from HTML form
     const config = {};
-    config.states = states_input.value.split(",");
-    config.start = start_input.value;
-    config.symbols = symbols_input.value.split(",");
-    config.empty_symbol = empty_symbol_input.value;
 
     config.rules = [];
     for (let rule of rules_input.value.split("\n")) {
@@ -101,6 +83,9 @@ function config_from_inputs() {
             config.rules.push(rule.split(","));
         }
     }
+
+    config.start = start_input.value;
+    config.empty_symbol = empty_symbol_input.value;
 
     // optional
     if (halt_input.value) {
@@ -201,12 +186,12 @@ function schedule_preview() {
                 try {
                     const preview_machine_no_validate = new TuringMachine(config, false);
                     preview_machine_no_validate.renderGraph()
-                    .then((graph) => {
-                        set_contents(machine_div, graph);
-                    })
-                    .catch(error => {
-                        console.error(error);
-                    });
+                        .then((graph) => {
+                            set_contents(machine_div, graph);
+                        })
+                        .catch(error => {
+                            console.error(error);
+                        });
                 } catch (e) {
                     // could not render preview without validation
                     show_error_dialog(e);

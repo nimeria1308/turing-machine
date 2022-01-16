@@ -24,9 +24,7 @@ class TuringMachine {
             return def;
         }
 
-        const states = required_parameter("states");
         const start = required_parameter("start");
-        const symbols = required_parameter("symbols");
         const empty_symbol = required_parameter("empty_symbol");
         const rules = required_parameter("rules");
 
@@ -34,28 +32,11 @@ class TuringMachine {
         const tape = optional_parameter("tape", [empty_symbol]);
         const head = optional_parameter("head", 0);
 
-        // states validation
-        const valid_states = new Set(states);
+        // states and symbols are generated from the rules
+        const states = new Set();
 
-        function check_state(state, name, required = true) {
-            if (!required && is_empty(state)) {
-                // not required and not passed
-                return;
-            }
-
-            if (!valid_states.has(state) && validate) {
-                throw `${name} state '${state}' is not valid. Choose from: ${Array.from(valid_states).join(", ")}`;
-            }
-        }
-
-        // symbols validation
-        const valid_symbols = new Set(symbols);
-
-        function check_symbol(symbol, name) {
-            if (!valid_symbols.has(symbol) && validate) {
-                throw `Invalid ${name} symbol '${symbol}'. Choose from: ${Array.from(valid_symbols).join(", ")}`;
-            }
-        }
+        // symbols are generated from the rules
+        const symbols = new Set();
 
         // actions validation
         const valid_head_actions = new Set(["N", "L", "R"]);
@@ -66,12 +47,16 @@ class TuringMachine {
             }
         }
 
-        // validate start and halt states
-        check_state(start, "Start");
-        check_state(halt, "Halt", false);
+        // add start to set of states
+        states.add(start);
 
-        // validate empty symbol
-        check_symbol(empty_symbol, "Empty");
+        // add halt to set of states if present
+        if (!is_empty(halt)) {
+            states.add(halt);
+        }
+
+        // add empty symbol to list of symbols
+        symbols.add(empty_symbol);
 
         // Map of current states
         this.state_map = new Map();
@@ -85,14 +70,6 @@ class TuringMachine {
             const head_action = v[3];
             const to_state = v[4];
 
-            // validate states
-            check_state(from_state, "Current");
-            check_state(to_state, "Next");
-
-            // validate symbols
-            check_symbol(from_symbol, "Scanned");
-            check_symbol(to_symbol, "Printed");
-
             // validate actions
             check_head_action(head_action);
 
@@ -100,6 +77,7 @@ class TuringMachine {
             if (!this.state_map.has(from_state)) {
                 this.state_map.set(from_state, new Map());
             }
+
             const from_table = this.state_map.get(from_state);
             if (from_table.has(from_symbol)) {
                 throw `There already is a rule for state='${from_state}' symbol='${from_symbol}'`;
@@ -110,16 +88,25 @@ class TuringMachine {
                 to_symbol,
                 head_action
             ]);
+
+            // add states from to rule to set of states
+            states.add(from_state);
+            states.add(to_state);
+
+            // add symbols from rule to set of symbols
+            symbols.add(from_symbol);
+            symbols.add(to_symbol);
         }
 
-        this.states = valid_states;
+        this.states = states;
         this.start = start;
         this.halt = halt;
+        this.symbols = symbols;
         this.empty_symbol = empty_symbol;
         this.rules = rules;
         this.current = start;
         this.viz = new Viz();
-        this.tape = new TuringTape(valid_symbols, empty_symbol, tape, head, validate);
+        this.tape = new TuringTape(empty_symbol, tape, head);
 
         // sub-operations
         this.operation = "normal";

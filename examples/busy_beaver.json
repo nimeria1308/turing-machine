@@ -1,14 +1,7 @@
 {
     "url": "https://en.wikipedia.org/wiki/Turing_machine",
-    "states": [
-        "A", "B", "C", "H"
-    ],
     "start": "A",
     "halt": "H",
-    "symbols": [
-        0,
-        1
-    ],
     "empty_symbol": 0,
     "rules": [
         ["A", 0, 1, "R", "B"],
