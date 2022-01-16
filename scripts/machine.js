@@ -74,7 +74,7 @@ class TuringMachine {
         check_symbol(empty_symbol, "Empty");
 
         // Map of current states
-        this.states = new Map();
+        this.state_map = new Map();
 
         // validate all rules and transform them
         // into a lookup table
@@ -97,10 +97,10 @@ class TuringMachine {
             check_head_action(head_action);
 
             // Add to lookup table
-            if (!this.states.has(from_state)) {
-                this.states.set(from_state, new Map());
+            if (!this.state_map.has(from_state)) {
+                this.state_map.set(from_state, new Map());
             }
-            const from_table = this.states.get(from_state);
+            const from_table = this.state_map.get(from_state);
             if (from_table.has(from_symbol)) {
                 throw `There already is a rule for state='${from_state}' symbol='${from_symbol}'`;
             }
@@ -112,6 +112,7 @@ class TuringMachine {
             ]);
         }
 
+        this.states = valid_states;
         this.start = start;
         this.halt = halt;
         this.empty_symbol = empty_symbol;
@@ -145,7 +146,7 @@ class TuringMachine {
         }
 
         // current state in lookup table
-        const state = this.states.get(this.current);
+        const state = this.state_map.get(this.current);
 
         if (this.operation == "normal") {
             this.operation = "read_state";
@@ -231,7 +232,7 @@ class TuringMachine {
         let graph = "digraph {\n";
 
         // list states
-        for (let state of this.states.keys()) {
+        for (let state of this.states) {
             graph += `  "${state}" [shape=circle];\n`;
         }
 

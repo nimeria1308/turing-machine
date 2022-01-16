@@ -1,5 +1,6 @@
 var machine = null;
 var animation = null;
+var preview = null;
 
 function set_contents(element, contents) {
     while (element.lastElementChild) {
@@ -170,4 +171,50 @@ function run_turing_machine() {
 
     clearInterval(animation);
     animation = setInterval(render_machine, 100);
+}
+
+function schedule_preview() {
+    if (preview != null) {
+        clearTimeout(preview);
+        preview = null;
+    }
+
+    preview = setTimeout(() => {
+        const machine_div = document.getElementById("machine_preview");
+
+        try {
+            const config = config_from_inputs();
+
+            try {
+                const preview_machine = new TuringMachine(config);
+                preview_machine.renderGraph()
+                    .then((graph) => {
+                        set_contents(machine_div, graph);
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+
+                // rendered without errors
+            } catch (e) {
+                // try rendering without validation
+                try {
+                    const preview_machine_no_validate = new TuringMachine(config, false);
+                    preview_machine_no_validate.renderGraph()
+                    .then((graph) => {
+                        set_contents(machine_div, graph);
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+                } catch (e) {
+                    // could not render preview without validation
+                    show_error_dialog(e);
+                }
+            }
+        } catch (e) {
+            // failed parsing config
+            show_error_dialog(e);
+        }
+    }, 100);
 }

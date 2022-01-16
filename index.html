@@ -32,53 +32,56 @@
     </div>
     <div class="container">
         <div class="shadow-lg p-4 rounded-3 border">
-            <div id="file_form">
-                <form>
-                    <h2 class="form-group">Configure machine</h2>
-                    <div class="form-group">
-                        <!-- how to fire onchange for same file: https://stackoverflow.com/questions/4109276/how-to-detect-input-type-file-change-for-the-same-file -->
-                        <input type="file" class="form-control-file" id="machine_file" accept=".json" onclick="this.value=null;" onchange="file_changed(this)">
-                    </div>
+            <div id="file_form" class="col">
+                <h2 class="form-group">Configure machine</h2>
+                <div class="form-group">
+                    <!-- how to fire onchange for same file: https://stackoverflow.com/questions/4109276/how-to-detect-input-type-file-change-for-the-same-file -->
+                    <input type="file" class="form-control-file" id="machine_file" accept=".json" onclick="this.value=null;" onchange="file_changed(this)">
+                </div>
 
-                    <div class="form-group">
-                        <label for="machine_states">States <small>(comma separated)</small>:</label>
-                        <input type="text" class="form-control" id="machine_states" placeholder="Example: S1,S2,S3,HALT" />
-                    </div>
+                <div class="row">
+                    <form class="col">
+                        <div class="form-group">
+                            <label for="machine_states">States <small>(comma separated)</small>:</label>
+                            <input type="text" class="form-control" id="machine_states" placeholder="Example: S1,S2,S3,HALT" oninput="schedule_preview()" />
+                        </div>
 
-                    <div class="form-group">
-                        <label for="machine_start">Start state:</label>
-                        <input type="text" class="form-control" id="machine_start" />
-                    </div>
+                        <div class="form-group">
+                            <label for="machine_start">Start state:</label>
+                            <input type="text" class="form-control" id="machine_start" oninput="schedule_preview()" />
+                        </div>
 
-                    <div class="form-group">
-                        <label for="machine_halt">Halt state <small>(optional)</small>:</label>
-                        <input type="text" class="form-control" id="machine_halt" />
-                    </div>
+                        <div class="form-group">
+                            <label for="machine_halt">Halt state <small>(optional)</small>:</label>
+                            <input type="text" class="form-control" id="machine_halt" oninput="schedule_preview()" />
+                        </div>
 
-                    <div class="form-group">
-                        <label for="machine_symbols">Symbols <small>(comma separated)</small>:</label>
-                        <input type="text" class="form-control" id="machine_symbols" />
-                    </div>
+                        <div class="form-group">
+                            <label for="machine_symbols">Symbols <small>(comma separated)</small>:</label>
+                            <input type="text" class="form-control" id="machine_symbols" />
+                        </div>
 
-                    <div class="form-group">
-                        <label for="machine_empty_symbol">Empty symbol:</label>
-                        <input type="text" class="form-control" id="machine_empty_symbol" />
-                    </div>
+                        <div class="form-group">
+                            <label for="machine_empty_symbol">Empty symbol:</label>
+                            <input type="text" class="form-control" id="machine_empty_symbol" />
+                        </div>
 
-                    <div class="form-group">
-                        <label for="machine_tape">Initial tape:</label>
-                        <input type="text" class="form-control" id="machine_tape" />
-                    </div>
+                        <div class="form-group">
+                            <label for="machine_tape">Initial tape:</label>
+                            <input type="text" class="form-control" id="machine_tape" />
+                        </div>
 
-                    <div class="form-group">
-                        <label for="machine_rules">Rules <small>(line separated 5-tuples)</small>:</label>
-                        <textarea id="machine_rules" class="form-control" rows=5 placeholder="Example: A,0,1,R,B"></textarea>
-                        <small id="emailHelp" class="form-text text-muted">Rule format: from state, scan symbol, write symbol, head action (N/L/R), to state </small>
-                    </div>
+                        <div class="form-group">
+                            <label for="machine_rules">Rules <small>(line separated 5-tuples)</small>:</label>
+                            <textarea id="machine_rules" class="form-control" rows=5 placeholder="Example: A,0,1,R,B" oninput="schedule_preview()"></textarea>
+                            <small id="emailHelp" class="form-text text-muted">Rule format: from state, scan symbol, write symbol, head action (N/L/R), to state </small>
+                        </div>
 
-                    <button type="button" class="btn btn-primary" onclick="launch_machine()">Launch</button>
-                    <button type="button" class="btn btn-secondary" onclick="save_machine()">Save</button>
-                </form>
+                        <button type="button" class="btn btn-primary" onclick="launch_machine()">Launch</button>
+                        <button type="button" class="btn btn-secondary" onclick="save_machine()">Save</button>
+                    </form>
+                    <div class="col" id="machine_preview"></div>
+                </div>
             </div>
 
             <div id="view">
