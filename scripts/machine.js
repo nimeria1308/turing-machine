@@ -251,14 +251,53 @@ class TuringMachine {
 
         // go over rules
         for (let rule of this.rules) {
-            const from_state = rule[0];
-            const from_symbol = rule[1];
-            const to_symbol = rule[2];
-            const head_action = rule[3];
-            const to_state = rule[4];
-            graph += `  "${from_state}" -> "${to_state}" [label="${from_symbol} / ${to_symbol}, ${head_action}"];\n`;
-        }
+            let from_state = rule[0];
+            let from_symbol = rule[1];
+            let to_symbol = rule[2];
+            let head_action = rule[3];
+            let to_state = rule[4];
 
+            // graph rule template
+            // <from_state> -> <to_state> [label="<from symbol> / <to symbol> [[<head action>]]"]
+
+            // handle non-valid rules for preview,
+            // so that it doesn't say "undefined" all over the place
+
+            const has_state = !is_empty(from_state) || !is_empty(to_state);
+            const has_both_states = !is_empty(from_state) && !is_empty(to_state);
+            const has_symbols = !is_empty(from_symbol) || !is_empty(to_symbol);
+            const has_head_action = !is_empty(head_action);
+            const has_label = has_symbols || has_head_action;
+
+            // only consider showing on graph if:
+            //   - both states are there
+            //   - at least one state is there and there is a label
+            if (has_both_states || (has_state && has_label)) {
+                from_state = is_empty(from_state) ? "?" : from_state;
+                to_state = is_empty(to_state) ? "?" : to_state;
+
+                // add the "from -> to" to the grah
+                graph += `  "${from_state}" -> "${to_state}"`;
+
+                if (has_label) {
+                    const label = [];
+                    if (has_symbols) {
+                        from_symbol = is_empty(from_symbol) ? "?" : from_symbol;
+                        to_symbol = is_empty(to_symbol) ? "?" : to_symbol;
+                        label.push(`${from_symbol} / ${to_symbol}`);
+                    }
+
+                    if (has_head_action) {
+                        head_action = is_empty(head_action) ? "?" : head_action;
+                        label.push(`[${head_action}]`);
+                    }
+
+                    graph += ` [label="${label.join('\n')}"]`;
+                }
+
+                graph += ';\n';
+            }
+        }
 
         graph += "}";
         return graph;
