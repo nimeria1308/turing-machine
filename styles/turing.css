@@ -91,10 +91,6 @@
     grid-column: 2;
 }
 
-.rules {
-    border-collapse: collapse;
-}
-
 .rules td,
 .rules th {
     text-align: center;
@@ -102,27 +98,27 @@
     padding: 0.25em;
 }
 
-.rules>tr.move_head {
+.rules tr.move_head {
     background-color: #dfa;
 }
 
-.rules>tr.moved_head {
+.rules tr.moved_head {
     background-color: #efa;
 }
 
-.rules>tr.move_state {
+.rules tr.move_state {
     background-color: #ffc;
 }
 
-.rules>tr.normal {
+.rules tr.normal {
     background-color: #ccc;
 }
 
-.rules>tr.current {
+.rules tr.current {
     background-color: #cfc;
 }
 
-.rules>tr.halted {
+.rules tr.halted {
     background-color: orangered;
 }
 

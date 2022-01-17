@@ -451,10 +451,13 @@ class TuringMachine {
     render_rules() {
         // create container
         const container = document.createElement("table");
-        container.className = "rules";
+        container.className = "rules table";
+
+        const thead = document.createElement("thead");
+        container.appendChild(thead);
 
         const header = document.createElement("tr");
-        container.appendChild(header);
+        thead.appendChild(header);
 
         const from_state_th = document.createElement("th");
         from_state_th.innerText = "Current state";
@@ -476,6 +479,9 @@ class TuringMachine {
         to_state_th.innerText = "Next state";
         header.appendChild(to_state_th);
 
+        const tbody = document.createElement("tbody");
+        container.appendChild(tbody);
+
         for (let rule of this.rules) {
             const from_state = rule[0];
             const from_symbol = rule[1];
@@ -484,7 +490,7 @@ class TuringMachine {
             const to_state = rule[4];
 
             const row = document.createElement("tr");
-            container.appendChild(row);
+            tbody.appendChild(row);
 
             const from_state_td = document.createElement("td");
             from_state_td.innerText = from_state;
@@ -555,21 +561,21 @@ class TuringMachine {
         }
 
         // add halt rule
-        const halt_row = document.createElement("tr");
-        container.appendChild(halt_row);
+        if (!is_empty(this.halt)) {
+            const halt_row = document.createElement("tr");
+            tbody.appendChild(halt_row);
 
-        if (this.current == this.halt) {
-            switch (this.operation) {
-                case "halted":
-                    halt_row.className = "halted";
-                    break;
-                default:
-                    halt_row.className = "normal";
-                    break;
+            if (this.current == this.halt) {
+                switch (this.operation) {
+                    case "halted":
+                        halt_row.className = "halted";
+                        break;
+                    default:
+                        halt_row.className = "normal";
+                        break;
+                }
             }
-        }
 
-        if (this.halt !== undefined && this.halt !== null) {
             const halt_td = document.createElement("td");
             halt_td.innerText = this.halt;
             halt_td.colSpan = 5;
