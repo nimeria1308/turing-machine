@@ -1,5 +1,6 @@
 var machine = null;
 var animation = null;
+var halted = false;
 var preview = null;
 
 function set_contents(element, contents) {
@@ -109,15 +110,17 @@ function save_machine() {
 
         filename = prompt("Enter filename for turing machine", filename);
 
-        if (!filename.endsWith(".json")) {
-            filename = filename + ".json";
+        if (filename != null) {
+            if (!filename.endsWith(".json")) {
+                filename = filename + ".json";
+            }
+
+            // Generate JSON
+            const text = JSON.stringify(config, null, 4);
+
+            const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+            saveAs(blob, filename);
         }
-
-        // Generate JSON
-        const text = JSON.stringify(config, null, 4);
-
-        const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
-        saveAs(blob, filename);
     } catch (e) {
         show_error_dialog(e);
     }
@@ -130,46 +133,52 @@ function stop_machine() {
     }
 }
 
-function launch_machine() {
-    try {
-        const config = config_from_inputs();
-        machine = new TuringMachine(config);
-
-        // all is well, hide the configuration window
-        run_turing_machine();
-    } catch (e) {
-        show_error_dialog(e);
-    }
-}
-
-function run_turing_machine() {
+function render_machine(on_render = null) {
     const machine_div = document.getElementById("machine");
     const tape_div = document.getElementById("tape");
     const operation_div = document.getElementById("operation");
     const rules_div = document.getElementById("rules");
 
-    function render_machine() {
-        machine.renderGraph()
-            .then((graph) => {
-                set_contents(machine_div, graph);
-                set_contents(tape_div, machine.renderTape());
-                set_contents(operation_div, machine.render_operation());
-                set_contents(rules_div, machine.render_rules());
+    machine.renderGraph()
+        .then((graph) => {
+            set_contents(machine_div, graph);
+            set_contents(tape_div, machine.renderTape());
+            set_contents(operation_div, machine.render_operation());
+            set_contents(rules_div, machine.render_rules());
 
-                if (!machine.advance()) {
-                    stop_machine();
-                }
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    }
+            if (on_render != null) {
+                on_render();
+            }
 
+        })
+        .catch(error => {
+            console.error(error);
+        });
+}
+
+function run_machine() {
     stop_machine();
-    animation = setInterval(render_machine, 100);
+    halted = false;
+
+    animation = setInterval(function() {
+        render_machine(function() {
+            if (!machine.advance()) {
+                stop_machine();
+                halted = true;
+                update_inspection_buttons();
+            }
+        });
+    }, 100);
 }
 
 function schedule_preview() {
+    stop_machine();
+    machine = null;
+
+    // disable "inspection tab", until passes verification
+    const inspect_tab = document.getElementById("inspect-tab");
+    inspect_tab.classList.add("disabled");
+
     if (preview != null) {
         clearTimeout(preview);
         preview = null;
@@ -177,9 +186,11 @@ function schedule_preview() {
 
     preview = setTimeout(() => {
         const machine_div = document.getElementById("machine_preview");
+        const machine_status_div = document.getElementById("machine_preview_status");
 
         try {
             const config = config_from_inputs();
+            machine = null;
 
             try {
                 const preview_machine = new TuringMachine(config);
@@ -192,9 +203,17 @@ function schedule_preview() {
                     });
 
                 // rendered without errors
+                machine_status_div.innerText = "Machine is OK";
+                inspect_tab.classList.remove("disabled");
+                halted = false;
+
+                // update global machine
+                machine = preview_machine;
             } catch (e) {
                 // try rendering without validation
                 try {
+                    machine_status_div.innerText = `Error: ${e}`;
+
                     const preview_machine_no_validate = new TuringMachine(config, false);
                     preview_machine_no_validate.renderGraph()
                         .then((graph) => {
@@ -213,4 +232,63 @@ function schedule_preview() {
             show_error_dialog(e);
         }
     }, 100);
+}
+
+function toggle_machine() {
+    const running = (animation != null);
+
+    if (running) {
+        // pause it
+        stop_machine();
+    } else {
+        run_machine();
+    }
+
+    update_inspection_buttons();
+}
+
+function update_inspection_buttons() {
+    const running = (animation != null);
+
+    const run_pause_button = document.getElementById("run_pause_button");
+    const run_pause_button_label = document.getElementById("run_pause_button_label");
+    const advance_button = document.getElementById("advance_button");
+    const reset_button = document.getElementById("reset_button");
+
+    if (running) {
+        run_pause_button.checked = true;
+        run_pause_button_label.innerText = "Pause";
+        run_pause_button.disabled = false;
+        advance_button.disabled = true;
+        reset_button.disabled = true;
+    } else {
+        if (halted) {
+            run_pause_button.checked = true;
+            run_pause_button.disabled = true;
+            run_pause_button_label.innerText = "Halted";
+            advance_button.disabled = true;
+        } else {
+            run_pause_button.disabled = false;
+            run_pause_button.checked = false;
+            run_pause_button_label.innerText = "Run";
+            advance_button.disabled = false;
+        }
+        reset_button.disabled = false;
+    }
+
+    if (halted) {}
+}
+
+function on_load() {
+    // attach event listeners to tab buttons
+    const inspect_tab = document.getElementById("inspect-tab");
+
+    inspect_tab.addEventListener('shown.bs.tab', function(event) {
+        render_machine();
+        update_inspection_buttons();
+    });
+
+    inspect_tab.addEventListener('hide.bs.tab', function(event) {
+        console.log("hide", event.target.id);
+    });
 }

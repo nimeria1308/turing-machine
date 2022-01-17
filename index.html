@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Turing Machine!</title>
+    <title>Turing Machine Visualizer</title>
 
     <!-- jQuery -->
     <script src="external/jQuery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -25,65 +25,92 @@
     <script src="scripts/page.js"></script>
 </head>
 
-<body>
+<body onload="on_load()">
     <div class="px-4 py-5 text-center">
         <h1>Turing Machine Visualizer</h1>
         <small class="text-muted"><em>by Simona Dimitrova</em></small>
     </div>
     <div class="container">
         <div class="shadow-lg p-4 rounded-3 border">
-            <div id="file_form">
-                <h2 class="form-group">Configure machine</h2>
-                <div class="container">
-                    <div class="form-group">
-                        <!-- how to fire onchange for same file: https://stackoverflow.com/questions/4109276/how-to-detect-input-type-file-change-for-the-same-file -->
-                        <input type="file" class="form-control-file" id="machine_file" accept=".json" onclick="this.value=null;" onchange="file_changed(this)">
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="configure-tab" data-bs-toggle="tab" data-bs-target="#configure" type="button" role="tab" aria-controls="configure" aria-selected="true">Configure</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link disabled" id="inspect-tab" data-bs-toggle="tab" data-bs-target="#inspect" type="button" role="tab" aria-controls="inspect" aria-selected="false">Inspect</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="about-tab" data-bs-toggle="tab" data-bs-target="#about" type="button" role="tab" aria-controls="about" aria-selected="false">About</button>
+                </li>
+            </ul>
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <div class="tab-pane fade show active pt-4" id="configure" role="tabpanel" aria-labelledby="configure-tab">
+                    <div class="container pb-4">
+                        <div class="form-group">
+                            <!-- how to fire onchange for same file: https://stackoverflow.com/questions/4109276/how-to-detect-input-type-file-change-for-the-same-file -->
+                            <input type="file" class="form-control-file" id="machine_file" accept=".json" onclick="this.value=null;" onchange="file_changed(this)">
+                        </div>
+                    </div>
+
+                    <div class="container">
+                        <div class="row">
+                            <form class="col-4">
+                                <div class="form-group">
+                                    <label for="machine_rules">Rules <small>(line separated 5-tuples)</small>:</label>
+                                    <textarea id="machine_rules" class="form-control" rows=5 placeholder="Example: A,0,1,R,B" oninput="schedule_preview()"></textarea>
+                                    <small class="form-text text-muted">Rule format: from state, scan symbol, write symbol, head action (N/L/R), to state</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="machine_start">Start state:</label>
+                                    <input type="text" class="form-control" id="machine_start" oninput="schedule_preview()" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="machine_halt">Halt state:</label>
+                                    <input type="text" class="form-control" id="machine_halt" oninput="schedule_preview()" />
+                                    <small class="form-text text-muted">Optional</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="machine_empty_symbol">Empty symbol:</label>
+                                    <input type="text" class="form-control" id="machine_empty_symbol" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="machine_tape">Initial tape:</label>
+                                    <input type="text" class="form-control" id="machine_tape" />
+                                    <small class="form-text text-muted">Optional</small>
+                                </div>
+
+                                <button type="button" class="btn btn-primary" onclick="save_machine()">Save</button>
+                            </form>
+                            <div class="col">
+                                <div id="machine_preview"></div>
+                                <div id="machine_preview_status"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                <div class="tab-pane fade pt-4" id="inspect" role="tabpanel" aria-labelledby="inspect-tab">
+                    <div class="btn-toolbar" role="toolbar" aria-label="Machine inspection toolbar">
+                        <div class="btn-group" role="group" aria-label="Run group">
+                            <input type="checkbox" class="btn-check" id="run_pause_button" autocomplete="off">
+                            <label class="btn btn-outline-primary" id="run_pause_button_label" for="run_pause_button" onclick="toggle_machine()">Run</label>
 
-                <div class="container">
-                    <div class="row">
-                        <form class="col-4">
-                            <div class="form-group">
-                                <label for="machine_rules">Rules <small>(line separated 5-tuples)</small>:</label>
-                                <textarea id="machine_rules" class="form-control" rows=5 placeholder="Example: A,0,1,R,B" oninput="schedule_preview()"></textarea>
-                                <small class="form-text text-muted">Rule format: from state, scan symbol, write symbol, head action (N/L/R), to state</small>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="machine_start">Start state:</label>
-                                <input type="text" class="form-control" id="machine_start" oninput="schedule_preview()" />
-                            </div>
-
-                            <div class="form-group">
-                                <label for="machine_halt">Halt state:</label>
-                                <input type="text" class="form-control" id="machine_halt" oninput="schedule_preview()" />
-                                <small class="form-text text-muted">Optional</small>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="machine_empty_symbol">Empty symbol:</label>
-                                <input type="text" class="form-control" id="machine_empty_symbol" />
-                            </div>
-                            <div class="form-group">
-                                <label for="machine_tape">Initial tape:</label>
-                                <input type="text" class="form-control" id="machine_tape" />
-                                <small class="form-text text-muted">Optional</small>
-                            </div>
-
-                            <button type="button" class="btn btn-primary" onclick="launch_machine()">Launch</button>
-                            <button type="button" class="btn btn-secondary" onclick="save_machine()">Save</button>
-                        </form>
-                        <div class="col-6" id="machine_preview"></div>
+                            <button type="button" class="btn btn-primary" id="advance_button" onclick="advance_machine()">Advance</button>
+                            <button type="button" class="btn btn-primary" id="reset_button" onclick="reset_machine()">Reset</button>
+                        </div>
                     </div>
+                    <div id="machine"></div>
+                    <div id="tape"></div>
+                    <div id="operation"></div>
+                    <div id="rules"></div>
                 </div>
-            </div>
-
-            <div id="view">
-                <div id="machine"></div>
-                <div id="tape"></div>
-                <div id="operation"></div>
-                <div id="rules"></div>
+                <div class="tab-pane fade pt-4" id="about" role="tabpanel" aria-labelledby="about-tab">
+                    About us
+                </div>
             </div>
         </div>
     </div>
