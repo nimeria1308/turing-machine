@@ -156,7 +156,7 @@ function render_machine(on_render = null) {
         });
 }
 
-function run_machine() {
+function run_machine(speed) {
     stop_machine();
     halted = false;
 
@@ -168,7 +168,7 @@ function run_machine() {
                 update_inspection_buttons();
             }
         });
-    }, 100);
+    }, speed);
 }
 
 function schedule_preview() {
@@ -247,7 +247,10 @@ function toggle_machine() {
         // pause it
         stop_machine();
     } else {
-        run_machine();
+        // get animation speed
+        const speed_button = document.querySelector('input[name="speed"]:checked');
+        const speed = parseInt(speed_button.value);
+        run_machine(speed);
     }
 
     update_inspection_buttons();
@@ -260,6 +263,7 @@ function update_inspection_buttons() {
     const run_pause_button_label = document.getElementById("run_pause_button_label");
     const advance_button = document.getElementById("advance_button");
     const reset_button = document.getElementById("reset_button");
+    const speed_buttons = document.getElementsByName("speed");
 
     if (running) {
         run_pause_button.checked = true;
@@ -267,7 +271,14 @@ function update_inspection_buttons() {
         run_pause_button.disabled = false;
         advance_button.disabled = true;
         reset_button.disabled = true;
+        for (let s of speed_buttons) {
+            s.disabled = true;
+        }
     } else {
+        for (let s of speed_buttons) {
+            s.disabled = false;
+        }
+
         if (halted) {
             run_pause_button.checked = true;
             run_pause_button.disabled = true;

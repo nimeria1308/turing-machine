@@ -98,10 +98,20 @@
                 </div>
                 <div class="tab-pane fade pt-4" id="inspect" role="tabpanel" aria-labelledby="inspect-tab">
                     <div class="btn-toolbar" role="toolbar" aria-label="Machine inspection toolbar">
-                        <div class="btn-group" role="group" aria-label="Run group">
+                        <div class="btn-group me-4" role="group" aria-label="Run group">
                             <input type="checkbox" class="btn-check" id="run_pause_button" autocomplete="off">
                             <label class="btn btn-outline-primary" id="run_pause_button_label" for="run_pause_button" onclick="toggle_machine()">Run</label>
 
+                            <input type="radio" class="btn-check" name="speed" id="speed_quick" autocomplete="off" value="50">
+                            <label class="btn btn-outline-secondary" for="speed_quick">Quick</label>
+                            <input type="radio" class="btn-check" name="speed" id="speed_normal" autocomplete="off" value="250" checked>
+                            <label class="btn btn-outline-secondary" for="speed_normal">Normal</label>
+                            <input type="radio" class="btn-check" name="speed" id="speed_slow" autocomplete="off" value="1000">
+                            <label class="btn btn-outline-secondary" for="speed_slow">Slow</label>
+
+                        </div>
+
+                        <div class="btn-group" role="group" aria-label="Inspect group">
                             <button type="button" class="btn btn-primary" id="advance_button" onclick="advance_machine()">Advance</button>
                             <button type="button" class="btn btn-primary" id="reset_button" onclick="reset_machine()">Reset</button>
                         </div>
