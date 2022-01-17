@@ -303,6 +303,13 @@ function advance_machine() {
     render_machine();
 }
 
+function reset_machine() {
+    machine.reset();
+    halted = false;
+    update_inspection_buttons();
+    render_machine();
+}
+
 function on_load() {
     // attach event listeners to tab buttons
     const inspect_tab = document.getElementById("inspect-tab");

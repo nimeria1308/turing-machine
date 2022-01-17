@@ -129,13 +129,23 @@ class TuringMachine {
         this.symbols = symbols;
         this.empty_symbol = empty_symbol;
         this.rules = rules;
-        this.current = start;
         this.viz = new Viz();
-        this.tape = new TuringTape(empty_symbol, tape, head);
+        this.initial_tape = tape;
+        this.initial_head = head;
+
+        this.reset();
+    }
+
+    reset() {
+        // reset state
+        this.current = this.start;
+
+        // initialize tape
+        this.tape = new TuringTape(this.empty_symbol, this.initial_tape, this.initial_head);
 
         // sub-operations
         this.operation = "normal";
-        this.read_symbol = tape[head];
+        this.read_symbol = this.initial_tape[this.initial_head];
         this.head_op = "^";
         this.op_counter = 1;
     }

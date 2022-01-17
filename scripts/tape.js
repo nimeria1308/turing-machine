@@ -5,7 +5,7 @@ class TuringTape {
         }
 
         this.empty_symbol = empty_symbol;
-        this.tape = tape;
+        this.tape = [...tape]; // copy the tape
         this.head = head;
     }
 
