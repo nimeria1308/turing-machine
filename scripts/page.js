@@ -292,8 +292,15 @@ function update_inspection_buttons() {
         }
         reset_button.disabled = false;
     }
+}
 
-    if (halted) {}
+function advance_machine() {
+    if (!machine.advance()) {
+        halted = true;
+        update_inspection_buttons();
+    }
+
+    render_machine();
 }
 
 function on_load() {
