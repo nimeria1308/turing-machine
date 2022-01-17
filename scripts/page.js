@@ -186,7 +186,8 @@ function schedule_preview() {
 
     preview = setTimeout(() => {
         const machine_div = document.getElementById("machine_preview");
-        const machine_status_div = document.getElementById("machine_preview_status");
+        const machine_status = document.getElementById("machine_preview_status");
+        const machine_error = document.getElementById("machine_preview_error");
 
         try {
             const config = config_from_inputs();
@@ -203,7 +204,10 @@ function schedule_preview() {
                     });
 
                 // rendered without errors
-                machine_status_div.innerText = "Machine is OK";
+                machine_status.innerText = "Machine is valid";
+                machine_status.className = "badge bg-success";
+                machine_error.innerText = "";
+
                 inspect_tab.classList.remove("disabled");
                 halted = false;
 
@@ -212,7 +216,9 @@ function schedule_preview() {
             } catch (e) {
                 // try rendering without validation
                 try {
-                    machine_status_div.innerText = `Error: ${e}`;
+                    machine_status.innerText = "Failed";
+                    machine_status.className = "badge bg-danger";
+                    machine_error.innerText = e;
 
                     const preview_machine_no_validate = new TuringMachine(config, false);
                     preview_machine_no_validate.renderGraph()
