@@ -47,38 +47,52 @@
             <!-- Tab panes -->
             <div class="tab-content">
                 <div class="tab-pane fade show active pt-4" id="configure" role="tabpanel" aria-labelledby="configure-tab">
-                    <div class="container pb-4">
-                        <div class="form-group">
-                            <!-- how to fire onchange for same file: https://stackoverflow.com/questions/4109276/how-to-detect-input-type-file-change-for-the-same-file -->
-                            <input type="file" class="form-control-file" id="machine_file" accept=".json" onclick="this.value=null;" onchange="file_changed(this)">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="form-group pb-3">
+                                    <!-- how to fire onchange for same file: https://stackoverflow.com/questions/4109276/how-to-detect-input-type-file-change-for-the-same-file -->
+                                    <label for="machine_file" class="form-label">Load machine from JSON</label>
+                                    <input type="file" class="form-control" id="machine_file" accept=".json" onclick="this.value=null;" onchange="file_changed(this)">
+                                </div>
+                                <div class="form-group pb-3">
+                                    <label for="machine_sample" class="form-label">Load machine sample</label>
+                                    <select class="form-select" id="machine_sample" onchange="sample_changed(this)">
+                                        <option value="" selected>Choose sample</option>
+                                        <option value="busy_beaver">Busy beaver</option>
+                                        <option value="copy">A copy subroutine</option>
+                                        <option value="turing_very_first">Turing's very first example</option>
+                                     </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <div class="container">
                         <div class="row">
                             <form class="col-4">
-                                <div class="form-group">
+                                <div class="form-group pb-3">
                                     <label for="machine_rules">Rules <small>(line separated 5-tuples)</small>:</label>
                                     <textarea id="machine_rules" class="form-control" rows=5 placeholder="Example: A,0,1,R,B" oninput="schedule_preview()"></textarea>
                                     <small class="form-text text-muted">Rule format: from state, scan symbol, write symbol, head action (N/L/R), to state</small>
                                 </div>
 
-                                <div class="form-group">
+                                <div class="form-group pb-3">
                                     <label for="machine_start">Start state:</label>
                                     <input type="text" class="form-control" id="machine_start" oninput="schedule_preview()" />
                                 </div>
 
-                                <div class="form-group">
+                                <div class="form-group pb-3">
                                     <label for="machine_halt">Halt state:</label>
                                     <input type="text" class="form-control" id="machine_halt" oninput="schedule_preview()" />
                                     <small class="form-text text-muted">Optional</small>
                                 </div>
 
-                                <div class="form-group">
+                                <div class="form-group pb-3">
                                     <label for="machine_empty_symbol">Empty symbol:</label>
                                     <input type="text" class="form-control" id="machine_empty_symbol" />
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group pb-3">
                                     <label for="machine_tape">Initial tape:</label>
                                     <input type="text" class="form-control" id="machine_tape" />
                                     <small class="form-text text-muted">Optional</small>

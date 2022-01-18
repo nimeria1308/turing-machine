@@ -21,6 +21,37 @@ function show_error_dialog(error) {
 
 var filename = "turing_machine.json";
 
+function load_machine_from_config(config) {
+    if (!("start" in config)) {
+        throw `"start" key missing in '${f.name}'`;
+    }
+    const start = document.getElementById("machine_start");
+    start.value = config.start;
+
+    // optional
+    const halt = document.getElementById("machine_halt");
+    halt.value = ("halt" in config) ? config.halt : "";
+
+    if (!("empty_symbol" in config)) {
+        throw `"empty_symbol" key missing in '${f.name}'`;
+    }
+    const empty_symbol = document.getElementById("machine_empty_symbol");
+    empty_symbol.value = config.empty_symbol;
+
+    // optional
+    const tape = document.getElementById("machine_tape");
+    tape.value = ("tape" in config) ? config.tape : "";
+
+    if (!("rules" in config)) {
+        throw `"rules" key missing in '${f.name}'`;
+    }
+    const rules = document.getElementById("machine_rules");
+    rules.value = config.rules.join("\n");
+
+    // update preview
+    schedule_preview();
+}
+
 function file_changed(file) {
     const f = file.files[0];
     if (f) {
@@ -35,41 +66,52 @@ function file_changed(file) {
                 try {
                     // parse JSON
                     const config = JSON.parse(event.target.result);
-
-                    if (!("start" in config)) {
-                        throw `"start" key missing in '${f.name}'`;
-                    }
-                    const start = document.getElementById("machine_start");
-                    start.value = config.start;
-
-                    // optional
-                    const halt = document.getElementById("machine_halt");
-                    halt.value = ("halt" in config) ? config.halt : "";
-
-                    if (!("empty_symbol" in config)) {
-                        throw `"empty_symbol" key missing in '${f.name}'`;
-                    }
-                    const empty_symbol = document.getElementById("machine_empty_symbol");
-                    empty_symbol.value = config.empty_symbol;
-
-                    // optional
-                    const tape = document.getElementById("machine_tape");
-                    tape.value = ("tape" in config) ? config.tape : "";
-
-                    if (!("rules" in config)) {
-                        throw `"rules" key missing in '${f.name}'`;
-                    }
-                    const rules = document.getElementById("machine_rules");
-                    rules.value = config.rules.join("\n");
-
-                    // update preview
-                    schedule_preview();
+                    load_machine_from_config(config);
                 } catch (e) {
                     show_error_dialog(e);
                 }
             };
             reader.readAsText(f);
         }
+    }
+}
+
+function sample_changed(sample) {
+    if (sample.value == "") {
+        // "Choose sample" option
+        return;
+    }
+
+    if (confirm("Are you sure you want to replace the loaded machine?")) {
+        // clear file's filename
+        const file = document.getElementById("machine_file");
+        file.value = null;
+
+        // set sample filename for "Save"
+        filename = `${sample.value}.json`;
+
+        // load sample via fetch (the new ajax)
+        // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+        const url = `examples/${sample.value}.json`;
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw `Could not download ${url}`;
+                }
+
+                // returns promise, needs another "then"
+                return response.json();
+            })
+            .then(config => {
+                load_machine_from_config(config);
+            })
+            .catch(e => {
+                show_error_dialog(e);
+            });
+    } else {
+        // cancelled, remove choice
+        sample.value = "";
+        return false;
     }
 }
 
@@ -317,9 +359,5 @@ function on_load() {
     inspect_tab.addEventListener('shown.bs.tab', function(event) {
         render_machine();
         update_inspection_buttons();
-    });
-
-    inspect_tab.addEventListener('hide.bs.tab', function(event) {
-        console.log("hide", event.target.id);
     });
 }
