@@ -325,18 +325,22 @@ class TuringMachine {
 
                 if (has_label) {
                     const label = [];
-                    if (has_symbols) {
-                        from_symbol = is_empty(from_symbol) ? "?" : transform_symbol(from_symbol);
-                        to_symbol = is_empty(to_symbol) ? "?" : transform_symbol(to_symbol);
-                        label.push(`${from_symbol} / ${to_symbol}`);
+                    const from_to_symbols_same = (from_symbol === to_symbol);
+                    from_symbol = is_empty(from_symbol) ? "?" : transform_symbol(from_symbol);
+                    to_symbol = is_empty(to_symbol) ? "?" : transform_symbol(to_symbol);
+
+                    label.push(`${from_symbol} \u2192`);
+
+                    if (!from_to_symbols_same) {
+                        label.push(`${to_symbol},`);
                     }
 
                     if (has_head_action) {
                         head_action = is_empty(head_action) ? "?" : head_action;
-                        label.push(`[${head_action}]`);
+                        label.push(head_action);
                     }
 
-                    graph += ` [label="${label.join('\n')}"]`;
+                    graph += ` [label="${label.join(' ')}"]`;
                 }
 
                 graph += ';\n';
