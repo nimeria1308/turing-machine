@@ -133,3 +133,8 @@
 .rules td.write_symbol {
     background-color: #ff0;
 }
+
+img.portrait {
+    width: 80%;
+    clip-path: circle(50% at center);
+}
