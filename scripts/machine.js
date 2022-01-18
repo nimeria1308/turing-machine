@@ -2,6 +2,15 @@ function is_empty(v) {
     return v == "" || v === undefined || v == null;
 }
 
+function transform_symbol(s) {
+    switch (s) {
+        case " ":
+            return "\u2294"
+        default:
+            return s;
+    }
+}
+
 class TuringMachine {
     constructor(config, validate = true) {
         function required_parameter(name) {
@@ -317,8 +326,8 @@ class TuringMachine {
                 if (has_label) {
                     const label = [];
                     if (has_symbols) {
-                        from_symbol = is_empty(from_symbol) ? "?" : from_symbol;
-                        to_symbol = is_empty(to_symbol) ? "?" : to_symbol;
+                        from_symbol = is_empty(from_symbol) ? "?" : transform_symbol(from_symbol);
+                        to_symbol = is_empty(to_symbol) ? "?" : transform_symbol(to_symbol);
                         label.push(`${from_symbol} / ${to_symbol}`);
                     }
 
@@ -497,11 +506,11 @@ class TuringMachine {
             row.appendChild(from_state_td);
 
             const from_symbol_td = document.createElement("td");
-            from_symbol_td.innerText = from_symbol;
+            from_symbol_td.innerText = transform_symbol(from_symbol);
             row.appendChild(from_symbol_td);
 
             const to_symbol_td = document.createElement("td");
-            to_symbol_td.innerText = to_symbol;
+            to_symbol_td.innerText = transform_symbol(to_symbol);
             row.appendChild(to_symbol_td);
 
             const head_action_td = document.createElement("td");
