@@ -30,7 +30,7 @@ function load_machine_from_config(config) {
 
     // optional
     const halt = document.getElementById("machine_halt");
-    halt.value = ("halt" in config) ? config.halt : "";
+    halt.value = ("halt" in config) ? config.halt.join(",") : "";
 
     if (!("empty_symbol" in config)) {
         throw `"empty_symbol" key missing in '${f.name}'`;
@@ -135,7 +135,7 @@ function config_from_inputs() {
     // optional
     const halt_input = document.getElementById("machine_halt");
     if (halt_input.value) {
-        config.halt = halt_input.value;
+        config.halt = halt_input.value.split(",");
     }
 
     const tape_input = document.getElementById("machine_tape");

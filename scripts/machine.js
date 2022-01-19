@@ -37,7 +37,7 @@ class TuringMachine {
         const empty_symbol = required_parameter("empty_symbol");
         const rules = required_parameter("rules");
 
-        const halt = optional_parameter("halt", null);
+        const halt = optional_parameter("halt", []);
         const tape = optional_parameter("tape", [empty_symbol]);
         const head = optional_parameter("head", 0);
 
@@ -59,9 +59,9 @@ class TuringMachine {
         // add start to set of states
         states.add(start);
 
-        // add halt to set of states if present
-        if (!is_empty(halt)) {
-            states.add(halt);
+        // add halt states to set of states if present
+        for (let h of halt) {
+            states.add(h);
         }
 
         // add empty symbol to list of symbols
@@ -134,7 +134,7 @@ class TuringMachine {
 
         this.states = states;
         this.start = start;
-        this.halt = halt;
+        this.halt = new Set(halt);
         this.symbols = symbols;
         this.empty_symbol = empty_symbol;
         this.rules = rules;
@@ -167,7 +167,7 @@ class TuringMachine {
         }
 
         // bail out if halted
-        if (this.current == this.halt) {
+        if (this.halt.has(this.current)) {
             if (this.operation != "halted") {
                 this.operation = "halted";
                 return true;
@@ -268,9 +268,9 @@ class TuringMachine {
         }
 
         // only add halt state if it is there
-        if (!is_empty(this.halt)) {
+        for (let h of this.halt) {
             // halt state has a special shape
-            graph += `  "${this.halt}" [shape=doublecircle];\n`;
+            graph += `  "${h}" [shape=doublecircle];\n`;
         }
 
         // add extra start state
@@ -574,11 +574,11 @@ class TuringMachine {
         }
 
         // add halt rule
-        if (!is_empty(this.halt)) {
+        for (let h of this.halt) {
             const halt_row = document.createElement("tr");
             tbody.appendChild(halt_row);
 
-            if (this.current == this.halt) {
+            if (this.current == h) {
                 switch (this.operation) {
                     case "halted":
                         halt_row.className = "halted";
@@ -590,7 +590,7 @@ class TuringMachine {
             }
 
             const halt_td = document.createElement("td");
-            halt_td.innerText = this.halt;
+            halt_td.innerText = h;
             halt_td.colSpan = 5;
             halt_row.appendChild(halt_td);
         }

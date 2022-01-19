@@ -17,7 +17,9 @@
         ["S5", 1, 1, "L", "S5"]
     ],
     "start": "S1",
-    "halt": "H",
+    "halt": [
+        "H"
+    ],
     "empty_symbol": 0,
     "tape": [1, 1, 1]
 }

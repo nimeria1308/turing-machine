@@ -11,6 +11,8 @@
         ["C", 1, 1, "N", "H"]
     ],
     "start": "A",
-    "halt": "H",
+    "halt": [
+        "H"
+    ],
     "empty_symbol": 0
 }
