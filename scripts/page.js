@@ -194,7 +194,10 @@ function render_machine(on_render = null) {
 
         })
         .catch(error => {
-            console.error(error);
+            stop_machine();
+            halted = true;
+            update_inspection_buttons();
+            show_error_dialog(error);
         });
 }
 
@@ -337,12 +340,18 @@ function update_inspection_buttons() {
 }
 
 function advance_machine() {
-    if (!machine.advance()) {
+    try {
+        if (!machine.advance()) {
+            halted = true;
+            update_inspection_buttons();
+        }
+
+        render_machine();
+    } catch (e) {
         halted = true;
         update_inspection_buttons();
+        show_error_dialog(e);
     }
-
-    render_machine();
 }
 
 function reset_machine() {
