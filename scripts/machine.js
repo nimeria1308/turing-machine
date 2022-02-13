@@ -99,6 +99,15 @@ class TuringMachine {
                 if (is_empty(to_symbol)) {
                     throw `To symbol for rule '${v}' is empty`;
                 }
+
+                // to simplify visual input in index.html,
+                // require symbols are 1 character long
+                if ((from_symbol + "").length != 1) {
+                    throw `From symbol '${from_symbol}' for rule '${v}' must be 1 charater long`;
+                }
+                if ((to_symbol + "").length != 1) {
+                    throw `To symbol '${to_symbol}' for rule '${v}' must be 1 charater long`;
+                }
             }
 
             // Add to lookup table
