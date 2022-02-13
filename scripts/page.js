@@ -40,7 +40,7 @@ function load_machine_from_config(config) {
 
     // optional
     const tape = document.getElementById("machine_tape");
-    tape.value = ("tape" in config) ? config.tape.join("") : "";
+    tape.value = ("tape" in config) ? config.tape : "";
 
     if (!("rules" in config)) {
         throw `"rules" key missing in '${f.name}'`;
@@ -140,8 +140,7 @@ function config_from_inputs() {
 
     const tape_input = document.getElementById("machine_tape");
     if (tape_input.value) {
-        // split into 1 symbol length
-        config.tape = tape_input.value.split("");
+        config.tape = tape_input.value;
     }
 
     return config;
