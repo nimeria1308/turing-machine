@@ -186,6 +186,10 @@ class TuringMachine {
         }
 
         // current state in lookup table
+        if (!this.state_map.has(this.current)) {
+            throw `No rules for current state '${this.current}'`;
+        }
+
         const state = this.state_map.get(this.current);
 
         if (this.operation == "normal") {
