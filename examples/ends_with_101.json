@@ -1,0 +1,28 @@
+{
+    "url": "https://www.cs.odu.edu/~zeil/cs390/latest/Public/turing-jflap/index.html#ends-with-101",
+    "description": "This is a turing machine that at the end of reading a string of 1s and 0s enters the ACCEPT state if the string ends in 101. Note that this machine is actually a DFA (deterministic finite automaton). To use a Turin machine as a DFA: output symbol is the same as input symbol; always move to the right; Use an empty symbol to signal end of string",
+    "rules": [
+        ["q0", 0, 0, "R", "q0"],
+        ["q0", 1, 1, "R", "q1"],
+        ["q0", " ", " ", "N", "REJECT"],
+
+        ["q1", 0, 0, "R", "q2"],
+        ["q1", 1, 1, "R", "q1"],
+        ["q1", " ", " ", "N", "REJECT"],
+
+        ["q2", 0, 0, "R", "q0"],
+        ["q2", 1, 1, "R", "q3"],
+        ["q2", " ", " ", "N", "REJECT"],
+
+        ["q3", 0, 0, "R", "q2"],
+        ["q3", 1, 1, "R", "q1"],
+        ["q3", " ", " ", "N", "ACCEPT"]
+    ],
+    "start": "q0",
+    "halt": [
+        "REJECT",
+        "ACCEPT"
+    ],
+    "empty_symbol": " ",
+    "tape": [1, 1, 1, 0, 1]
+}
