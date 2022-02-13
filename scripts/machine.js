@@ -364,20 +364,18 @@ class TuringMachine {
         return graph;
     }
 
-    renderGraph() {
+    renderGraph(callback) {
         const graph = this.generateGraphString();
-        return new Promise((resolve, reject) => {
-            this.viz.renderSVGElement(graph)
-                .then(element => {
-                    resolve(element);
-                })
-                .catch(error => {
-                    // Create a new Viz instance (@see Caveats page for more info)
-                    this.viz = new Viz();
-                    console.log(graph);
-                    reject(error);
-                });
-        });
+        this.viz.renderSVGElement(graph)
+            .then(function(result) {
+                console.log(result);
+                callback(result);
+            })
+            .catch(function(error) {
+                // Create a new Viz instance as per suggested by viz.js FAQ
+                this.viz = new Viz();
+                console.log(graph);
+            });
     }
 
     renderTape() {

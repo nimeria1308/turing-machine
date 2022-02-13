@@ -181,8 +181,8 @@ function render_machine(on_render = null) {
     const operation_div = document.getElementById("operation");
     const rules_div = document.getElementById("rules");
 
-    machine.renderGraph()
-        .then((graph) => {
+    machine.renderGraph(function(graph) {
+        try {
             set_contents(machine_div, graph);
             set_contents(tape_div, machine.renderTape());
             set_contents(operation_div, machine.render_operation());
@@ -191,14 +191,13 @@ function render_machine(on_render = null) {
             if (on_render != null) {
                 on_render();
             }
-
-        })
-        .catch(error => {
+        } catch (error) {
             stop_machine();
             halted = true;
             update_inspection_buttons();
             show_error_dialog(error);
-        });
+        }
+    });
 }
 
 function run_machine(speed) {
@@ -240,13 +239,13 @@ function schedule_preview() {
 
             try {
                 const preview_machine = new TuringMachine(config);
-                preview_machine.renderGraph()
-                    .then((graph) => {
+                preview_machine.renderGraph(function(graph) {
+                    try {
                         set_contents(machine_div, graph);
-                    })
-                    .catch(error => {
+                    } catch (error) {
                         console.error(error);
-                    });
+                    }
+                });
 
                 // rendered without errors
                 machine_status.innerText = "Machine is valid";
@@ -266,13 +265,13 @@ function schedule_preview() {
                     machine_error.innerText = e;
 
                     const preview_machine_no_validate = new TuringMachine(config, false);
-                    preview_machine_no_validate.renderGraph()
-                        .then((graph) => {
+                    preview_machine_no_validate.renderGraph(function(graph) {
+                        try {
                             set_contents(machine_div, graph);
-                        })
-                        .catch(error => {
+                        } catch (error) {
                             console.error(error);
-                        });
+                        }
+                    });
                 } catch (e) {
                     // could not render preview without validation
                     show_error_dialog(e);
