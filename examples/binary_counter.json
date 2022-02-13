@@ -1,0 +1,18 @@
+{
+    "url": "https://www.cl.cam.ac.uk/projects/raspberrypi/tutorials/turing-machine/four.html#counter",
+    "rules": [
+        ["s0", " ", " ", "L", "s1"],
+        ["s0", 0, 0, "R", "s0"],
+        ["s0", 1, 1, "R", "s0"],
+
+        ["s1", " ", 1, "R", "s2"],
+        ["s1", 0, 1, "L", "s2"],
+        ["s1", 1, 0, "L", "s1"],
+
+        ["s2", " ", " ", "L", "s0"],
+        ["s2", 0, 0, "R", "s2"],
+        ["s2", 1, 1, "R", "s2"]
+    ],
+    "start": "s0",
+    "empty_symbol": " "
+}
