@@ -40,6 +40,7 @@ class TuringTape {
 
     as_array() {
         // return a copy of tape
+        // https://stackoverflow.com/a/69969944/348183
         return [...this.tape];
     }
 }
