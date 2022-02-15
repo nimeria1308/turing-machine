@@ -1,3 +1,5 @@
+// Copyright (C) 2022 Simona Dimitrova
+
 function is_empty(v) {
     return v == "" || v === undefined || v == null;
 }

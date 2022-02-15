@@ -1,3 +1,5 @@
+// Copyright (C) 2022 Simona Dimitrova
+
 class TuringTape {
     constructor(empty_symbol, tape = [empty_symbol], head = 0) {
         if ((tape.length > 0) && (head < 0 || head >= tape.length)) {

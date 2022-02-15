@@ -1,3 +1,5 @@
+// Copyright (C) 2022 Simona Dimitrova
+
 /**
  * Current machine being visualized
  */
@@ -620,4 +622,9 @@ function on_load() {
         render_machine();
         update_inspection_buttons();
     });
+
+    // Add copyright notice
+    const copyright = document.getElementById("copyright");
+    const year = new Date().getFullYear();
+    copyright.innerText = `Copyright \u00A9 ${year} Simona Dimitrova`;
 }
